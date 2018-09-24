@@ -30,10 +30,10 @@
 #' @export
 #'
 mzdata_raw <- function(saveoutput = FALSE,
-                       outputname = "example-mzdata-raw",
+                       outputname = "mzdata-raw",
                        ...) {
   
-  files <- list.files(path = "./data-raw/example_mzxml_data",
+  files <- list.files(path = "./data-raw/mzxml",
                       full.names = TRUE,
                       recursive = TRUE)
   
