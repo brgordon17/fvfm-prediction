@@ -13,10 +13,11 @@
 rm(list=ls(all=T))
 
 # Create vectors for day, average set temp, collection (y/n)
-day <- seq(as.Date("2013-05-06"), as.Date("2013-05-20"), by="days")
-avetemp <- c(seq(from = 25, to = 32, by = 0.7), 33, 33, 34, 34)
-collect <- c(0,0,0,0,1,0,0,1,0,1,0,1,0,0,1)
-expcond <- data.frame(day, avetemp, collect)
+day <- c(0:16)
+date <- seq(as.Date("2013-05-06"), as.Date("2013-05-22"), by="days")
+avetemp <- c(seq(from = 25, to = 32.3, by = 0.7), 33, 33, 33, 34, 34, 34)
+collect <- c(1,0,0,0,0,1,0,0,1,0,1,0,1,0,0,0,1)
+expcond <- data.frame(day, date, avetemp, collect)
 
 # save
 saveRDS(expcond, "./data/processed/expcond.rds")
