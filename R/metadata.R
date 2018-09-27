@@ -1,34 +1,33 @@
-
-
-# Create vectors for day, average set temp, collection (y/n)
+# Experiment metadata ------------------------------------------------------------------
 day <- c(0:16)
-date <- seq(as.Date("2013-05-06"), as.Date("2013-05-22"), by="days")
+date <- seq(as.Date("2013-05-06"), as.Date("2013-05-22"), by = "days")
 avetemp <- c(seq(from = 25, to = 32.3, by = 0.7), 33, 33, 33, 34, 34, 34)
-collect <- c(1,0,0,0,0,1,0,0,1,0,1,0,1,0,0,0,1)
-expmd <- data.frame(day, date, avetemp, collect)
+collect <- as.logical(c(1,0,0,0,0,1,0,0,1,0,1,0,1,0,0,0,1))
+pam <- as.logical(c(1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1))
+cell_count <- as.logical(c(1,0,0,0,0,0,0,0,1,0,1,0,1,0,0,0,1))
+pigment <- as.logical(c(1,0,0,0,0,0,0,0,1,0,1,0,1,0,0,0,1))
+exp_metadata <- 
+  tibble::tibble(day, date, avetemp, collect, pam, cell_count, pigment)
 
 # save
-saveRDS(expcond, "./data/processed/expcond.rds")
+save(exp_metadata, file = "./data/exp_metadata.rda", compress = "bzip2")
 
 # Export csv
-readr::write_csv(expmd)
+readr::write_csv(exp_metadata, "./inst/extdata/exp_metadata.csv")
 
-## Data documentation ----------------------------------------------------------
-
-#' Preprocessed LCMS data
+#' experiment metadata
 #'
-#' A dataset of positive ESI-LCMS mz variables for coral samples subjected to
-#' experimental ocean warming and acidification at Heron Island in Feb 2011.
+#' The metadata for the bleaching experiment performed in May 2013
 #'
-#' @format A tibble with 101 rows and 1647 variables:
+#' @format A tibble with 17 rows and 7 variables:
 #' \describe{
-#'   \item{sample_ids}{ID's for each sample}
-#'   \item{class}{Treatment group. One of, control, eT (eleveated temperature),
-#'   eCO2 (elevated CO2), eCO2eT (elevated CO2 and temperature), PBQC}
-#'   \item{day}{Days of exposure to treatment}
-#'   \item{tank}{Tank membership. Either L (left) or R (right)}
-#'   \item{rep}{Sample replicate number}
-#'   \item{class_day}{interaction variable between class and day variables}
+#'   \item{day}{sampling timepoints}
+#'   \item{date}{the date}
+#'   \item{avetemp}{average temperature}
+#'   \item{collect}{were samples collected}
+#'   \item{pam}{was PAM fluorometry performed}
+#'   \item{cell_count}{were cell counts conducted}
+#'   \item{pigment}{was pigment analysis conducted}
 #' }
 #' @source Benjamin R. Gordon
-"mzdata"
+"exp_metadata"
