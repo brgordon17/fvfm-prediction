@@ -79,32 +79,3 @@ batchplot <-
         legend.key = element_rect(fill = "transparent", colour = NA),
         legend.text = element_text(size = 10))
 batchplot
-  
-  # saves ----------------------------------------------------------------------
-  if(save.gg) {
-    saveRDS(pcaplot, "./inst/extdata/mzpca_ggobject.rds")
-  }
-  
-  if(save.pdf) {
-    grDevices::pdf(paste(c("./figs/", plot.name, ".pdf"), collapse = ""),
-                   width = 10,
-                   height = 8,
-                   useDingbats = FALSE)
-    print(pcaplot)
-    grDevices::dev.off()
-  }
-  if(save.png) {
-    ppi <- 600
-    grDevices::png(paste(c("./figs/", plot.name, ".png"), collapse = ""),
-                   width = 8*ppi,
-                   height = 6*ppi,
-                   res = ppi)
-    print(pcaplot)
-    grDevices::dev.off()
-  }
-  
-  if(view.plot) {
-    print(pcaplot)
-  }
-  
-}
