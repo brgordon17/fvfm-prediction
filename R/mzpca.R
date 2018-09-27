@@ -79,3 +79,5 @@ batchplot <-
         legend.key = element_rect(fill = "transparent", colour = NA),
         legend.text = element_text(size = 10))
 batchplot
+
+# Run Harman package to remove batch effects and revisit.
