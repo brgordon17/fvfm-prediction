@@ -17,7 +17,6 @@ x_lab <- paste("PC1", " (", round(exp_var[1] * 100, 2), "%)", sep =  "")
 y_lab <- paste("PC2", " (", round(exp_var[2] * 100, 2), "%)", sep =  "")
 custom_colours <- gordon01::qual_colours[c(1, 2, 7)]
   
-  
 # create class plot ------------------------------------------------------------
 classplot <-
   ggplot(data = scores,
