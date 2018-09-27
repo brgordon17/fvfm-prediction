@@ -129,6 +129,7 @@ create_mzdata <- function(parallel = FALSE,
              rep(2, 24),
              rep(1, 24),
              rep(2, 24))
+  batch <- factor(batch)
 
   class_day <- interaction(class,
                            day,
