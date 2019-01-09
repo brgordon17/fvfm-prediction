@@ -1,34 +1,40 @@
-#' Feature detection using xcms.
-#'
-#' Method used by Gordon et. al. to extract LCMS features from
-#' \code{.mzXML} files using \code{xcms}.
-#'
-#' This function was used to extract features from \code{.mzXML} data. The
-#' function creates an \code{xcmsSet} object, groups peaks, corrects for
-#' retention time drift, re-groups the peaks, fills missing peaks, annotates
-#' adducts and isotopes, before saving the output to a \code{.csv} file in
-#' \code{/data-raw}.
-#'
-#' @param saveoutput Logical indicating if output should be saved
-#' @param outputname The name of the output file to be saved if \code{TRUE}
-#' @param ... Other arguments passed on to individual methods
-#'
-#' @return Returns a dataframe of class \code{tbl_df}
-#'
-#' @note \code{mzdata_raw()} was not intended to be used outside of this
-#' package. To keep the size of this package small, only a small example subset
-#' of our LCMS \code{.mzXML} data is made available in
-#' \code{./data-raw/example_mzxml_data/}. The full data set is available from
-#' the package author.
-#'
-#' @author Benjamin R. Gordon
-#'
-#' @seealso
-#' \code{\link[xcms]{xcmsSet}}
-#' \code{\link[CAMERA]{annotate}}
-#'
-#' @export
-#'
+# Feature detection and annotation using xcms and CAMERA
+# Benjamin Gordon 8-JAN-2019
+# See ./dev/mzdata-raw-dev.R for the developmental version of this code.
+
+library(xcms)
+library(magrittr)
+library(CAMERA)
+
+# Create phenodata (sample group info only) ------------------------------------
+
+
+# Data import ------------------------------------------------------------------
+
+# path to files
+mzfiles <- list.files(path = "./dev/test-data",
+                      full.names = TRUE,
+                      recursive = TRUE)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 mzdata_raw <- function(saveoutput = FALSE,
                        outputname = "mzdata-raw",
                        ...) {
