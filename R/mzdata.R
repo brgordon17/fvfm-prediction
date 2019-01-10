@@ -26,72 +26,107 @@
 #'  \code{metabolomics::MissingValues(complete.matrix = FALSE)}
 #' }
 #'
-#' @param parallel Logical indicating if missing values imputation should be run
-#' in parallel. If \code{TRUE}, the default number of cores is equal to half the
-#' available number of cores
-#' @param seed An integer used for setting seeds of random number generation
-#' @param savecsv Logical indicating if output should be saved as a \code{.csv}
-#' file to the current working directory
-#' @param saverda Logical indicating if a .rda file should be saved to /data
-#' @param csvname The name of the output .csv file to be saved if TRUE
-#'
-#' @return Returns a dataframe of class tbl_df
-#'
-#' @note Using \code{parallel = TRUE} is not reproducible. Future versions of
-#' this function may include support for reproducible RNG seeds when using
-#' parallel processing. Although this function is exported,
-#' \code{create_mzdata()} was not intended to be used outside of this package.
-#'
 #' @author Benjamin R. Gordon
 #'
 #' @seealso
 #' \code{\link[metabolomics]{MissingValues}}
 #' \code{\link[doMC]{registerDoMC}}
 #' \code{\link[missForest]{missForest}}
-#'
-#' @export
-#'
-create_mzdata <- function(parallel = FALSE,
-                          seed = 1978,
-                          savecsv = FALSE,
-                          saverda = TRUE,
-                          csvname = "mzdata") {
+#' 
+# Load libraries and data ------------------------------------------------------
+
+library(tidyverse)
+
+mzdata  <-  readr::read_csv("./data-raw/mzdata-raw.csv", na = "0")
   
-  mzdata  <-  readr::read_csv("./data-raw/mzdata-raw.csv", na = "0")
+# remove isotopes --------------------------------------------------------------
+
+mzdata <- mzdata[-grep("[M+1]", mzdata$isotopes, fixed = TRUE),]
+mzdata <- mzdata[-grep("[M+2]", mzdata$isotopes, fixed = TRUE),]
+mzdata <- mzdata[-grep("[M+3]", mzdata$isotopes, fixed = TRUE),]
+mzdata <- mzdata[-grep("[M+4]", mzdata$isotopes, fixed = TRUE),]
+
+# Clean up ---------------------------------------------------------------------
+
+mzdata <- dplyr::select(mzdata, -isotopes, -adduct, -pcgroup)
+mzdata <- mzdata[-2:-34]
+
+mz_names <- round(mzdata[, 1], 5)
+mz_names <- paste("mz", mz_names$mz, sep = "_")
+mz_names <- make.names(mz_names, unique = TRUE)
+
+mzdata <- tibble::as_tibble(t(mzdata), rownames = "sample_ids")
+colnames(mzdata)[2:ncol(mzdata)] <- mz_names
+mzdata <- mzdata[-1, ]
+sample_ids <- mzdata$sample_ids
   
-  # remove isotopes ------------------------------------------------------------
-  mzdata <- mzdata[-grep("[M+1]", mzdata$isotopes, fixed = TRUE),]
-  mzdata <- mzdata[-grep("[M+2]", mzdata$isotopes, fixed = TRUE),]
-  mzdata <- mzdata[-grep("[M+3]", mzdata$isotopes, fixed = TRUE),]
-  mzdata <- mzdata[-grep("[M+4]", mzdata$isotopes, fixed = TRUE),]
+# Create phenodata -------------------------------------------------------------
+
+phenodata  <-  readr::read_csv("./data-raw/phenodata-raw.csv", na = "0")
+
+class <- c(rep("2011-T2-C", 6),
+           rep("2011-T2-T", 3),
+           rep("2011-T3-C", 6),
+           rep("2011-T3-T", 6),
+           rep("2011-T4-C", 6),
+           rep("2011-T4-T", 6),
+           rep("2013-PBQC", 18),
+           rep("2013-T0-C", 12),
+           rep("2013-T0-T", 12),
+           rep("2013-T1-C", 12),
+           rep("2013-T1-T", 9),
+           rep("2013-T2-C", 12),
+           rep("2013-T2-T", 12),
+           rep("2013-T3-C", 12),
+           rep("2013-T3-T", 12),
+           rep("2013-T4-C", 12),
+           rep("2013-T4-T", 12),
+           rep("2013-T5-C", 12),
+           rep("2013-T5-T", 12),
+           rep("2014-T1-C", 10),
+           rep("2014-T1-T", 10),
+           rep("2014-T2-C", 10),
+           rep("2014-T2-T", 10),
+           rep("2014-T3-C", 10),
+           rep("2014-T3-T", 8),
+           rep("2014-T4-C", 9),
+           rep("2014-T4-T", 10)
+           )
+
+day <- c(rep("day 4", 6),
+         rep("day 4", 3),
+         rep("day 6", 6),
+         rep("day 6", 6),
+         rep("day 14", 6),
+         rep("day 14", 6),
+         rep("PBQC", 18),
+         rep("day 1", 12),
+         rep("day 1", 12),
+         rep("day 5", 12),
+         rep("day 5", 9),
+         rep("day 8", 12),
+         rep("day 8", 12),
+         rep("day 10", 12),
+         rep("day 10", 12),
+         rep("day 12", 12),
+         rep("day 12", 12),
+         rep("day 15", 12),
+         rep("day 15", 12),
+         rep("2014-T1-C", 10),
+         rep("2014-T1-T", 10),
+         rep("2014-T2-C", 10),
+         rep("2014-T2-T", 10),
+         rep("2014-T3-C", 10),
+         rep("2014-T3-T", 8),
+         rep("2014-T4-C", 9),
+         rep("2014-T4-T", 10)
+         )
   
-  # Clean up -------------------------------------------------------------------
-  mzdata <- dplyr::select(mzdata, -isotopes, -adduct, -pcgroup)
-  mzdata <- mzdata[-2:-20]
-  mz_names <- round(mzdata[, 1], 4)
-  mz_names <- paste("mz", mz_names$mz, sep = "_")
-  mz_names <- make.names(mz_names, unique = TRUE)
-  mzdata <- tibble::as_tibble(t(mzdata), rownames = "sample_ids")
-  colnames(mzdata)[2:ncol(mzdata)] <- mz_names
-  mzdata <- mzdata[-1, ]
-  sample_ids <- mzdata$sample_ids
   
-  # Create categorical variables -----------------------------------------------
-  class <- c(rep("PBQC", 18), 
-             rep("cont", 12), 
-             rep("treat", 12), 
-             rep("cont", 12), 
-             rep("treat", 9),
-             rep("cont", 12), 
-             rep("treat", 12),
-             rep("cont", 12), 
-             rep("treat", 12),
-             rep("cont", 12), 
-             rep("treat", 12),
-             rep("cont", 12), 
-             rep("treat", 12))
-  class <- factor(class, levels = c("cont", "treat", 
-                                    "PBQC"))
+  
+  
+  
+  
   
   day <- c(rep("PBQC", 18),
            rep("day0", 24),
@@ -182,7 +217,7 @@ create_mzdata <- function(parallel = FALSE,
   message("The data contained ", percent_na, "% NAs")########
   message("MissForest NRMSE: ", round(mzdata.imp$OOBerror, 4))
   mzdata
-}
+
 
 ## Data documentation ----------------------------------------------------------
 
