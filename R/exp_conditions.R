@@ -11,8 +11,8 @@ library(tibble)
 exp_conditions <- 
   tibble(date = seq(as.Date("2013-05-06"), by = 1, len = 17),
          day = c(0:16),
-         do_collect = as.logical(c(1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 
-                                1)),
+         do_collect = as.logical(c(1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 0,
+                                   0, 1)),
          do_pam = as.logical(c(1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1)),
          do_dens = as.logical(c(1,0,0,0,0,0,0,0,1,0,1,0,1,0,0,0,1)),
          do_pigment = as.logical(c(1,0,0,0,0,0,0,0,1,0,1,0,1,0,0,0,1)),
