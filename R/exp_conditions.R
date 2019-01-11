@@ -11,10 +11,14 @@ library(tibble)
 exp_conditions <- 
   tibble(date = seq(as.Date("2013-05-06"), by = 1, len = 17),
          day = c(0:16),
-         collect = as.logical(c(1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1)
-                              ),
-         samp_time = c("12:30:00", NA, NA, NA, NA, "12:45:00", NA, NA, "12:45:00",
-                       NA, "12:30:00", NA, "12:45:00", NA, NA, NA, "12:30:00"),
+         do_collect = as.logical(c(1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 
+                                1)),
+         do_pam = as.logical(c(1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1)),
+         do_dens = as.logical(c(1,0,0,0,0,0,0,0,1,0,1,0,1,0,0,0,1)),
+         do_pigment = as.logical(c(1,0,0,0,0,0,0,0,1,0,1,0,1,0,0,0,1)),
+         samp_time = c("12:30:00", NA, NA, NA, NA, "12:45:00", NA, NA, 
+                       "12:45:00", NA, "12:30:00", NA, "12:45:00", NA, NA, NA, 
+                       "12:30:00"),
          # Average FvFm of 12 reps
          cont_FvFm = c(0.652, NA, NA, NA, NA, 0.657, NA, NA, 0.655, NA, 0.678, 
                         NA, 0.643, NA, NA, NA, 0.659),
