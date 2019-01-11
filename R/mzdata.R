@@ -36,6 +36,7 @@
 # Load libraries and data ------------------------------------------------------
 
 library(tidyverse)
+library(metabolomics)
 
 mzdata  <-  readr::read_csv("./data-raw/mzdata-raw.csv", na = "0")
   
@@ -62,122 +63,145 @@ sample_ids <- mzdata$sample_ids
   
 # Create phenodata -------------------------------------------------------------
 
-phenodata  <-  readr::read_csv("./data-raw/phenodata-raw.csv", na = "0")
+phenodata <- tibble(sample_id = sample_ids,
+                    class = c(rep("2011-T2-C", 6),
+                              rep("2011-T2-T", 3),
+                              rep("2011-T3-C", 6),
+                              rep("2011-T3-T", 6),
+                              rep("2011-T4-C", 6),
+                              rep("2011-T4-T", 6),
+                              rep("2013-PBQC", 18),
+                              rep("2013-T0-C", 12),
+                              rep("2013-T0-T", 12),
+                              rep("2013-T1-C", 12),
+                              rep("2013-T1-T", 9),
+                              rep("2013-T2-C", 12),
+                              rep("2013-T2-T", 12),
+                              rep("2013-T3-C", 12),
+                              rep("2013-T3-T", 12),
+                              rep("2013-T4-C", 12),
+                              rep("2013-T4-T", 12),
+                              rep("2013-T5-C", 12),
+                              rep("2013-T5-T", 12),
+                              rep("2014-T1-C", 10),
+                              rep("2014-T1-T", 10),
+                              rep("2014-T2-C", 10),
+                              rep("2014-T2-T", 10),
+                              rep("2014-T3-C", 10),
+                              rep("2014-T3-T", 8),
+                              rep("2014-T4-C", 9),
+                              rep("2014-T4-T", 10)
+                              ),
+                    experiment = c(rep("2011", 33),
+                                   rep("2013", 159),
+                                   rep("2014", 77)
+                                   ),
+                    day = c(rep("day 4", 6),
+                            rep("day 4", 3),
+                            rep("day 6", 6),
+                            rep("day 6", 6),
+                            rep("day 14", 6),
+                            rep("day 14", 6),
+                            rep("PBQC", 18),
+                            rep("day 1", 12),
+                            rep("day 1", 12),
+                            rep("day 5", 12),
+                            rep("day 5", 9),
+                            rep("day 8", 12),
+                            rep("day 8", 12),
+                            rep("day 10", 12),
+                            rep("day 10", 12),
+                            rep("day 12", 12),
+                            rep("day 12", 12),
+                            rep("day 15", 12),
+                            rep("day 15", 12),
+                            rep("day 3", 10),
+                            rep("day 3", 10),
+                            rep("day 9", 10),
+                            rep("day 9", 10),
+                            rep("day 11", 10),
+                            rep("day 11", 8),
+                            rep("day 13", 9),
+                            rep("day 13", 10)
+                            ),
+                    cont_treat = c(rep("C", 6),
+                                   rep("T", 3),
+                                   rep("C", 6),
+                                   rep("T", 6),
+                                   rep("C", 6),
+                                   rep("T", 6),
+                                   rep("PBQC", 18),
+                                   rep("C", 12),
+                                   rep("T", 12),
+                                   rep("C", 12),
+                                   rep("T", 9),
+                                   rep("C", 12),
+                                   rep("T", 12),
+                                   rep("C", 12),
+                                   rep("T", 12),
+                                   rep("C", 12),
+                                   rep("T", 12),
+                                   rep("C", 12),
+                                   rep("T", 12),
+                                   rep("C", 10),
+                                   rep("T", 10),
+                                   rep("C", 10),
+                                   rep("T", 10),
+                                   rep("C", 10),
+                                   rep("T", 8),
+                                   rep("C", 9),
+                                   rep("T", 10)
+                                   ),
+                    FvFm = c(rep(0.613, 6),
+                             rep(0.578, 3),
+                             rep(0.610, 6),
+                             rep(0.523, 6),
+                             rep(0.720, 6),
+                             rep(0.502, 6),
+                             rep(NA, 18),
+                             rep(0.652, 12),
+                             rep(0.646, 12),
+                             rep(0.657, 12),
+                             rep(0.641, 9),
+                             rep(0.655, 12),
+                             rep(0.575, 12),
+                             rep(0.678, 12),
+                             rep(0.573, 12),
+                             rep(0.643, 12),
+                             rep(0.304, 12),
+                             rep(0.659, 12),
+                             rep(0.000, 12),
+                             rep(NA, 10),
+                             rep(NA, 10),
+                             rep(0.666, 10),
+                             rep(0.511, 10),
+                             rep(NA, 10),
+                             rep(NA, 8),
+                             rep(0.664, 9),
+                             rep(0.600, 10)
+                             ))
 
-class <- c(rep("2011-T2-C", 6),
-           rep("2011-T2-T", 3),
-           rep("2011-T3-C", 6),
-           rep("2011-T3-T", 6),
-           rep("2011-T4-C", 6),
-           rep("2011-T4-T", 6),
-           rep("2013-PBQC", 18),
-           rep("2013-T0-C", 12),
-           rep("2013-T0-T", 12),
-           rep("2013-T1-C", 12),
-           rep("2013-T1-T", 9),
-           rep("2013-T2-C", 12),
-           rep("2013-T2-T", 12),
-           rep("2013-T3-C", 12),
-           rep("2013-T3-T", 12),
-           rep("2013-T4-C", 12),
-           rep("2013-T4-T", 12),
-           rep("2013-T5-C", 12),
-           rep("2013-T5-T", 12),
-           rep("2014-T1-C", 10),
-           rep("2014-T1-T", 10),
-           rep("2014-T2-C", 10),
-           rep("2014-T2-T", 10),
-           rep("2014-T3-C", 10),
-           rep("2014-T3-T", 8),
-           rep("2014-T4-C", 9),
-           rep("2014-T4-T", 10)
-           )
+mzdata <- bind_cols(phenodata, mzdata[-1])
 
-day <- c(rep("day 4", 6),
-         rep("day 4", 3),
-         rep("day 6", 6),
-         rep("day 6", 6),
-         rep("day 14", 6),
-         rep("day 14", 6),
-         rep("PBQC", 18),
-         rep("day 1", 12),
-         rep("day 1", 12),
-         rep("day 5", 12),
-         rep("day 5", 9),
-         rep("day 8", 12),
-         rep("day 8", 12),
-         rep("day 10", 12),
-         rep("day 10", 12),
-         rep("day 12", 12),
-         rep("day 12", 12),
-         rep("day 15", 12),
-         rep("day 15", 12),
-         rep("2014-T1-C", 10),
-         rep("2014-T1-T", 10),
-         rep("2014-T2-C", 10),
-         rep("2014-T2-T", 10),
-         rep("2014-T3-C", 10),
-         rep("2014-T3-T", 8),
-         rep("2014-T4-C", 9),
-         rep("2014-T4-T", 10)
-         )
-  
-  
-  
-  
-  
-  
-  
-  day <- c(rep("PBQC", 18),
-           rep("day0", 24),
-           rep("day5", 21),
-           rep("day8", 24),
-           rep("day10", 24),
-           rep("day12", 24),
-           rep("day16", 24))
-  day <- factor(day,
-                levels = c("day0", "day5", "day8", "day10", "day12", "day16", 
-                           "PBQC"))
-  
-  tank <- c(rep("PBQC", 18),
-            c("02",  "02",  "02",  "13",  "13",  "13",  "40",  "40", "40", 
-              "48",  "48", "48",  "20",  "20",  "20",  "25", "25",  "25", 
-              "54", "54",  "54",  "55", "55", "55"),
-            c("02",  "02",  "02",  "13",  "13",  "13",  "40",  "40", "40", 
-              "48",  "48", "48",  "25", "25",  "25", "54", "54",  "54", 
-              "55", "55", "55"),
-            rep(c("02",  "02",  "02",  "13",  "13",  "13",  "40",  "40", "40", 
-                  "48",  "48", "48",  "20",  "20",  "20",  "25", "25",  "25", 
-                  "54", "54",  "54",  "55", "55", "55"), 4))
-  tank <- factor(tank, 
-                 levels = c("02", "13", "40", "48", "20", "25", "54", "55", 
-                            "PBQC"))
-  
-  rep <- c(c(1, 1, 10, 11, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 9), 
-           rep(c(1, 2, 3), 47))
-  rep <- factor(rep, levels = (c(1:11)))
-  
-  batch <- c(1, 2, 2, 2, rep(c(1, 2), 6), 2, 2,
-             rep(2, 24), 
-             rep(1, 21),
-             rep(2, 24),
-             rep(2, 24),
-             rep(1, 24),
-             rep(2, 24))
-  batch <- factor(batch)
 
-  class_day <- interaction(class,
-                           day,
-                           drop = TRUE,
-                           sep = ".")
-  
-  # Impute noise and remove unreliable mass features ---------------------------
-  mzdata <- tibble::as_tibble(cbind(class_day, mzdata[-1]))
-  mzdata_filt <- metabolomics::MissingValues(mzdata,
-                                             column.cutoff = 0.8,
-                                             group.cutoff = 0.75,
-                                             complete.matrix = FALSE,
-                                             seed = seed)
+# Below works but is slow when performed on the whole dataset
+mzdata[7:9] %>%
+  mutate_if(is.character,as.numeric)
+
+
+
+
+
+
+
+
+
+# Impute noise and remove unreliable mass features ---------------------------
+mzdata_filt <- MissingValues(mzdata[c(-3:-6)],
+                             column.cutoff = 0.8,
+                             group.cutoff = 0.75,
+                             complete.matrix = FALSE,
+                             seed = 1978)
   mzdata <- data.frame(sample_ids,
                        class,
                        day,
