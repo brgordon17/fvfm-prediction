@@ -34,21 +34,18 @@
 #' \code{\link[missForest]{missForest}}
 #' 
 # Load libraries and data ------------------------------------------------------
-
 library(tidyverse)
 library(metabolomics)
 
 mzdata  <-  readr::read_csv("./data-raw/mzdata-raw.csv", na = "0")
-  
-# remove isotopes --------------------------------------------------------------
 
+# remove isotopes --------------------------------------------------------------
 mzdata <- mzdata[-grep("[M+1]", mzdata$isotopes, fixed = TRUE),]
 mzdata <- mzdata[-grep("[M+2]", mzdata$isotopes, fixed = TRUE),]
 mzdata <- mzdata[-grep("[M+3]", mzdata$isotopes, fixed = TRUE),]
 mzdata <- mzdata[-grep("[M+4]", mzdata$isotopes, fixed = TRUE),]
 
 # Clean up ---------------------------------------------------------------------
-
 mzdata <- dplyr::select(mzdata, -isotopes, -adduct, -pcgroup)
 mzdata <- mzdata[-2:-34]
 
@@ -56,102 +53,102 @@ mz_names <- round(mzdata[, 1], 5)
 mz_names <- paste("mz", mz_names$mz, sep = "_")
 mz_names <- make.names(mz_names, unique = TRUE)
 
-mzdata <- tibble::as_tibble(t(mzdata), rownames = "sample_ids")
+mzdata <- tibble::as_tibble(t(mzdata), rownames = "sample_id")
 colnames(mzdata)[2:ncol(mzdata)] <- mz_names
 mzdata <- mzdata[-1, ]
-sample_ids <- mzdata$sample_ids
+sample_id <- mzdata$sample_id
   
 # Create phenodata -------------------------------------------------------------
 
-phenodata <- tibble(sample_id = sample_ids,
-                    class = c(rep("2011-T2-C", 6),
-                              rep("2011-T2-T", 3),
-                              rep("2011-T3-C", 6),
-                              rep("2011-T3-T", 6),
-                              rep("2011-T4-C", 6),
-                              rep("2011-T4-T", 6),
-                              rep("2013-PBQC", 18),
-                              rep("2013-T0-C", 12),
-                              rep("2013-T0-T", 12),
-                              rep("2013-T1-C", 12),
-                              rep("2013-T1-T", 9),
-                              rep("2013-T2-C", 12),
-                              rep("2013-T2-T", 12),
-                              rep("2013-T3-C", 12),
-                              rep("2013-T3-T", 12),
-                              rep("2013-T4-C", 12),
-                              rep("2013-T4-T", 12),
-                              rep("2013-T5-C", 12),
-                              rep("2013-T5-T", 12),
-                              rep("2014-T1-C", 10),
-                              rep("2014-T1-T", 10),
-                              rep("2014-T2-C", 10),
-                              rep("2014-T2-T", 10),
-                              rep("2014-T3-C", 10),
-                              rep("2014-T3-T", 8),
-                              rep("2014-T4-C", 9),
-                              rep("2014-T4-T", 10)
-                              ),
-                    experiment = c(rep("2011", 33),
-                                   rep("2013", 159),
-                                   rep("2014", 77)
-                                   ),
-                    day = c(rep("day 4", 6),
-                            rep("day 4", 3),
-                            rep("day 6", 6),
-                            rep("day 6", 6),
-                            rep("day 14", 6),
-                            rep("day 14", 6),
-                            rep("PBQC", 18),
-                            rep("day 1", 12),
-                            rep("day 1", 12),
-                            rep("day 5", 12),
-                            rep("day 5", 9),
-                            rep("day 8", 12),
-                            rep("day 8", 12),
-                            rep("day 10", 12),
-                            rep("day 10", 12),
-                            rep("day 12", 12),
-                            rep("day 12", 12),
-                            rep("day 15", 12),
-                            rep("day 15", 12),
-                            rep("day 3", 10),
-                            rep("day 3", 10),
-                            rep("day 9", 10),
-                            rep("day 9", 10),
-                            rep("day 11", 10),
-                            rep("day 11", 8),
-                            rep("day 13", 9),
-                            rep("day 13", 10)
-                            ),
-                    cont_treat = c(rep("C", 6),
-                                   rep("T", 3),
-                                   rep("C", 6),
-                                   rep("T", 6),
-                                   rep("C", 6),
-                                   rep("T", 6),
+phenodata <- tibble(sample_id = sample_id,
+                    class = factor(c(rep("2011-T2-C", 6),
+                                     rep("2011-T2-T", 3),
+                                     rep("2011-T3-C", 6),
+                                     rep("2011-T3-T", 6),
+                                     rep("2011-T4-C", 6),
+                                     rep("2011-T4-T", 6),
+                                     rep("2013-PBQC", 18),
+                                     rep("2013-T0-C", 12),
+                                     rep("2013-T0-T", 12),
+                                     rep("2013-T1-C", 12),
+                                     rep("2013-T1-T", 9),
+                                     rep("2013-T2-C", 12),
+                                     rep("2013-T2-T", 12),
+                                     rep("2013-T3-C", 12),
+                                     rep("2013-T3-T", 12),
+                                     rep("2013-T4-C", 12),
+                                     rep("2013-T4-T", 12),
+                                     rep("2013-T5-C", 12),
+                                     rep("2013-T5-T", 12),
+                                     rep("2014-T1-C", 10),
+                                     rep("2014-T1-T", 10),
+                                     rep("2014-T2-C", 10),
+                                     rep("2014-T2-T", 10),
+                                     rep("2014-T3-C", 10),
+                                     rep("2014-T3-T", 8),
+                                     rep("2014-T4-C", 9),
+                                     rep("2014-T4-T", 10)
+                                     )),
+                    experiment = factor(c(rep("2011", 33),
+                                          rep("2013", 159),
+                                          rep("2014", 77)
+                                          )),
+                    day = factor(c(rep("day 4", 6),
+                                   rep("day 4", 3),
+                                   rep("day 6", 6),
+                                   rep("day 6", 6),
+                                   rep("day 14", 6),
+                                   rep("day 14", 6),
                                    rep("PBQC", 18),
-                                   rep("C", 12),
-                                   rep("T", 12),
-                                   rep("C", 12),
-                                   rep("T", 9),
-                                   rep("C", 12),
-                                   rep("T", 12),
-                                   rep("C", 12),
-                                   rep("T", 12),
-                                   rep("C", 12),
-                                   rep("T", 12),
-                                   rep("C", 12),
-                                   rep("T", 12),
-                                   rep("C", 10),
-                                   rep("T", 10),
-                                   rep("C", 10),
-                                   rep("T", 10),
-                                   rep("C", 10),
-                                   rep("T", 8),
-                                   rep("C", 9),
-                                   rep("T", 10)
-                                   ),
+                                   rep("day 1", 12),
+                                   rep("day 1", 12),
+                                   rep("day 5", 12),
+                                   rep("day 5", 9),
+                                   rep("day 8", 12),
+                                   rep("day 8", 12),
+                                   rep("day 10", 12),
+                                   rep("day 10", 12),
+                                   rep("day 12", 12),
+                                   rep("day 12", 12),
+                                   rep("day 15", 12),
+                                   rep("day 15", 12),
+                                   rep("day 3", 10),
+                                   rep("day 3", 10),
+                                   rep("day 9", 10),
+                                   rep("day 9", 10),
+                                   rep("day 11", 10),
+                                   rep("day 11", 8),
+                                   rep("day 13", 9),
+                                   rep("day 13", 10)
+                                   )),
+                    cont_treat = factor(c(rep("C", 6),
+                                          rep("T", 3),
+                                          rep("C", 6),
+                                          rep("T", 6),
+                                          rep("C", 6),
+                                          rep("T", 6),
+                                          rep("PBQC", 18),
+                                          rep("C", 12),
+                                          rep("T", 12),
+                                          rep("C", 12),
+                                          rep("T", 9),
+                                          rep("C", 12),
+                                          rep("T", 12),
+                                          rep("C", 12),
+                                          rep("T", 12),
+                                          rep("C", 12),
+                                          rep("T", 12),
+                                          rep("C", 12),
+                                          rep("T", 12),
+                                          rep("C", 10),
+                                          rep("T", 10),
+                                          rep("C", 10),
+                                          rep("T", 10),
+                                          rep("C", 10),
+                                          rep("T", 8),
+                                          rep("C", 9),
+                                          rep("T", 10)
+                                          ), levels = c("C", "T", "PBQC")),
                     FvFm = c(rep(0.613, 6),
                              rep(0.578, 3),
                              rep(0.610, 6),
@@ -182,34 +179,19 @@ phenodata <- tibble(sample_id = sample_ids,
                              ))
 
 mzdata <- bind_cols(phenodata, mzdata[-1])
+mzdata <- type_convert(mzdata)
 
-
-# Below works but is slow when performed on the whole dataset
-mzdata[7:9] %>%
-  mutate_if(is.character,as.numeric)
-
-
-
-
-
-
-
-
-
-# Impute noise and remove unreliable mass features ---------------------------
-mzdata_filt <- MissingValues(mzdata[c(-3:-6)],
+# Impute noise and remove unreliable mass features -----------------------------
+mean(is.na(mzdata))
+mzdata_filt <- MissingValues(mzdata[c(-1, -3:-6)],
                              column.cutoff = 0.8,
                              group.cutoff = 0.75,
                              complete.matrix = FALSE,
                              seed = 1978)
-  mzdata <- data.frame(sample_ids,
-                       class,
-                       day,
-                       tank,
-                       rep,
-                       batch,
-                       mzdata_filt$output)
-  percent_na <- round(sum(is.na(mzdata))/prod(dim(mzdata[-1:-6]))*100, 2)
+mzdata <- bind_cols(phenodata,
+                    mzdata_filt$output[-1])
+rm(mzdata_filt)
+percent_na <- round(mean(is.na(mzdata))*100, 2)
   
   # Impute remaining missing values --------------------------------------------
   if(parallel) {
