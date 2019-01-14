@@ -36,7 +36,6 @@
 # Load libraries and data ------------------------------------------------------
 library(tidyverse)
 library(metabolomics)
-library(missForest)
 
 mzdata  <-  readr::read_csv("./data-raw/mzdata-raw.csv", na = "0")
 
@@ -182,43 +181,21 @@ phenodata <- tibble(sample_id = sample_id,
 mzdata <- bind_cols(phenodata, mzdata[-1])
 mzdata <- type_convert(mzdata)
 
-# Impute noise and remove unreliable mass features -----------------------------
+# Impute missing values --------------------------------------------------------
 round(mean(is.na(mzdata))*100, 2)
 mzdata_filt <- MissingValues(mzdata[c(-1, -3:-6)],
                              column.cutoff = 0.8,
-                             group.cutoff = 0.75,
-                             complete.matrix = FALSE,
+                             group.cutoff = 0.65,
+                             complete.matrix = TRUE,
                              seed = 1978)
 mzdata <- bind_cols(phenodata,
                     mzdata_filt$output[-1])
 rm(mzdata_filt)
-percent_na <- round(mean(is.na(mzdata))*100, 2)
+round(mean(is.na(mzdata))*100, 2)
   
-# Impute remaining missing values ----------------------------------------------
-mzdata <- as.data.frame(mzdata) # RF doesnt work with tibbles [drop = TRUE] is
-# ignored by tbl_df
-set.seed(1978)
-mzdata_mf <- missForest(mzdata[-1:-6], parallelize = "no")
-
-mzdata <- tibble::as_tibble(cbind(sample_ids, mzdata.imp$ximp))
-mzdata <- dplyr::arrange(mzdata, class, day)
-  
-  # write data -----------------------------------------------------------------
-  save(mzdata, file = "./data/mzdata.rda", compress = "bzip2")
-  
-  if(saverda) {
-    devtools::use_data(mzdata)
-  }
-  
-  if(savecsv) {
-    readr::write_csv(mzdata, paste(c("./inst/extdata/", csvname, ".csv"),
-                                   collapse = ""))
-  }
-  
-  message("The data contained ", percent_na, "% NAs")########
-  message("MissForest NRMSE: ", round(mzdata.imp$OOBerror, 4))
-  mzdata
-
+# write data -----------------------------------------------------------------
+save(mzdata, file = "./data/mzdata.rda", compress = "bzip2")
+save(phenodata, file = "./data/phenodata.rda", compress = "bzip2")
 
 ## Data documentation ----------------------------------------------------------
 
