@@ -1,5 +1,5 @@
-# Script to remove batch effects from mzdata using he Harman package. Conducted
-# by B. Gordon on 27SEP18
+# Script to remove batch effects from mzdata using the Harman package. Conducted
+# by B. Gordon on 14Jan18
 
 # Load Libraries
 library(tidyverse)
@@ -9,14 +9,32 @@ library(reshape2)
 # Explore variation ------------------------------------------------------------
 # Load data
 load("./data/mzdata.rda")
+load("./data/phenodata.rda")
+
+# split the data into its individual experiments
+mzdata2011 <- 
+  mzdata %>% 
+  filter(experiment == "2011")
+
+PBQCs <-
+  mzdata %>% 
+  filter(cont_treat == "PBQC")
+
+mzdata2013 <- 
+  mzdata %>% 
+  filter(experiment == "2013" & cont_treat != "PBQC")
+
+mzdata2014 <- 
+  mzdata %>% 
+  filter(experiment == "2014")
 
 # reshape the data
-longdata_orig <- reshape2::melt(mzdata)
+long2013 <- reshape2::melt(mzdata2013)
 
 # Create across group relative log abundance plot
 custom_colours <- gordon01::qual_colours
-box_orig <- ggplot(data = longdata_orig,
-                   aes(x = sample_ids, 
+box_orig <- ggplot(data = long2013,
+                   aes(x = sample_id, 
                        y = log(value, 2) - median(log(value, 2)),
                        fill = batch)) +
   geom_boxplot(outlier.alpha = 0.4,
@@ -34,30 +52,32 @@ box_orig
 
 # Remove batch effects ---------------------------------------------------------
 # Using log data
-# Load data and transform
-load("./data/mzdata.rda")
-harmdata <- as.data.frame(t(mzdata[-1:-7]))
+
+# define variables
+phenod <- mzdata2013[1:7] 
+harmdata <- as.data.frame(t(mzdata2013[-1:-7]))
 harmdata <- log(harmdata, 2)
-colnames(harmdata) <- mzdata$sample_ids
+colnames(harmdata) <- phenod$sample_id
 
 # Run Harman
 mzharm <- harman(harmdata, 
-                 expt = mzdata$class_day, 
-                 batch = mzdata$batch,
+                 expt = phenod$cont_treat, 
+                 batch = phenod$batch,
                  limit = 0.95)
+#summary(mzharm)
 
-# Reconstruct the data and compare
-mzdata_cor <- tibble::as.tibble(t(reconstructData(mzharm)))
-mzdata_cor <- dplyr::bind_cols(mzdata[1:7], mzdata_cor)
+# Reconstruct the data
+mzdata_cor <- tibble::as_tibble(t(reconstructData(mzharm)))
+mzdata_cor <- dplyr::bind_cols(phenod, mzdata_cor)
 
 # Explore variation ------------------------------------------------------------
 # reshape the data
-longdata_cor <- reshape2::melt(mzdata_cor)
+long2013_cor <- reshape2::melt(mzdata_cor)
 
 # Create across group relative log abundance plot
 custom_colours <- gordon01::qual_colours
-box_cor <- ggplot(data = longdata_cor,
-                  aes(x = sample_ids, 
+box_cor <- ggplot(data = long2013_cor,
+                  aes(x = sample_id, 
                       y = value - median(value),
                       fill = batch)) +
   geom_boxplot(outlier.alpha = 0.4,
@@ -75,11 +95,13 @@ box_cor
 
 # PCA plot original
 set.seed(1978)
-pca_orig <- stats::prcomp(log(mzdata[-1:-7], 2), scale = FALSE, center = TRUE)
+pca_orig <- stats::prcomp(mzdata2013[-1:-7], 
+                          scale = FALSE, 
+                          center = TRUE)
 
 # Define variables
 exp_var_orig <- summary(pca_orig)$importance[2 ,]
-scores_orig <- data.frame(mzdata[, 2:7], pca_orig$x)
+scores_orig <- data.frame(mzdata2013[, 2:7], pca_orig$x)
 x_lab_orig <- paste("PC1", " (", round(exp_var_orig[1] * 100, 2), "%)", sep =  "")
 y_lab_orig <- paste("PC2", " (", round(exp_var_orig[2] * 100, 2), "%)", sep =  "")
 
@@ -117,11 +139,41 @@ pca_cor <- stats::prcomp(mzdata_cor[-1:-7], scale = FALSE, center = TRUE)
 
 # Define variables
 exp_var_cor <- summary(pca_cor)$importance[2 ,]
-scores_cor <- data.frame(mzdata[, 2:7], pca_cor$x)
+scores_cor <- data.frame(mzdata2013[, 2:7], pca_cor$x)
 x_lab_cor <- paste("PC1", " (", round(exp_var_cor[1] * 100, 2), "%)", sep =  "")
 y_lab_cor <- paste("PC2", " (", round(exp_var_cor[2] * 100, 2), "%)", sep =  "")
 
-pca_cor <-
+# plot of control vs treatment
+pca_cor_CvsT <-
+  ggplot(data = scores_cor,
+         aes(x = PC1,
+             y = PC2,
+             color = cont_treat,
+             fill = cont_treat,
+             shape = cont_treat)) +
+  geom_point(size = 2.5,
+             stroke = 0.7,
+             position = position_jitter(width = 0.01 * diff(range(scores_cor$PC1)),
+                                        height = 0.01 * diff(range(scores_cor$PC2))
+             )) +
+  labs(x = x_lab_cor, y = y_lab_cor) +
+  scale_shape_manual(values = c(21, 22)) +
+  scale_color_manual(values = grDevices::adjustcolor(custom_colours,
+                                                     alpha.f = 0.9)) +
+  scale_fill_manual(values = grDevices::adjustcolor(custom_colours,
+                                                    alpha.f = 0.5)) +
+  theme(panel.background = element_blank(),
+        axis.ticks = element_blank(),
+        panel.grid.major = element_line(colour = "grey90"),
+        axis.text = element_text(size = 10, colour = "grey50"),
+        axis.title.y = element_text(size = 12),
+        axis.title.x = element_text(size = 12),
+        legend.key = element_rect(fill = "transparent", colour = NA),
+        legend.text = element_text(size = 10))
+pca_cor_CvsT
+
+# plot of batch
+pca_cor_batch <-
   ggplot(data = scores_cor,
          aes(x = PC1,
              y = PC2,
@@ -147,11 +199,8 @@ pca_cor <-
         axis.title.x = element_text(size = 12),
         legend.key = element_rect(fill = "transparent", colour = NA),
         legend.text = element_text(size = 10))
-pca_cor
+pca_cor_batch
 
-
-
-
-
-
-
+# rebuild mzdata and save ------------------------------------------------------
+mzdata_final <- bind_rows(mzdata2011, PBQCs, mzdata_cor, mzdata2014)
+save(mzdata_final, file = "./data/mzdata.rda", compress = "bzip2")
