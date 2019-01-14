@@ -89,6 +89,14 @@ phenodata <- tibble(sample_id = sample_id,
                                      rep("2014-T4-C", 9),
                                      rep("2014-T4-T", 10)
                                      )),
+                    batch = factor(c(rep("none", 51),
+                                     rep("batch 2", 24),
+                                     rep("batch 1", 21),
+                                     rep("batch 2", 48),
+                                     rep("batch 1", 24),
+                                     rep("batch 2", 24),
+                                     rep("none", 77)
+                                     )),
                     experiment = factor(c(rep("2011", 33),
                                           rep("2013", 159),
                                           rep("2014", 77)
@@ -183,7 +191,7 @@ mzdata <- type_convert(mzdata)
 
 # Impute missing values --------------------------------------------------------
 round(mean(is.na(mzdata))*100, 2)
-mzdata_filt <- MissingValues(mzdata[c(-1, -3:-6)],
+mzdata_filt <- MissingValues(mzdata[c(-1, -3:-7)],
                              column.cutoff = 0.8,
                              group.cutoff = 0.65,
                              complete.matrix = TRUE,
