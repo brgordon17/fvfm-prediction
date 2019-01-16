@@ -59,7 +59,7 @@ mzdata <- tibble::as_tibble(t(mzdata), rownames = "sample_id")
 colnames(mzdata)[2:ncol(mzdata)] <- mz_names
 mzdata <- mzdata[-1, ]
   
-# Create phenodata -------------------------------------------------------------
+# Create metadata -------------------------------------------------------------
 metadata <- tibble(sample_id = mzdata$sample_id,
                    class = factor(c(rep("2011-T2-C", 6),
                                     rep("2011-T2-T", 3),
