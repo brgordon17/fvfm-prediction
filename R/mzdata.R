@@ -384,14 +384,14 @@ pca_cor_batch <-
 pca_cor_batch
 
 # rebuild mzdata ---------------------------------------------------------------
-mzdata_final <- bind_rows(filter(mzdata, experiment == "2011"),
-                          filter(mzdata, cont_treat == "PBQC"),
-                          mzdata2013_cor,
-                          filter(mzdata, experiment == "2014")
-                          )
+mzdata <- bind_rows(filter(mzdata, experiment == "2011"),
+                    filter(mzdata, cont_treat == "PBQC"),
+                    mzdata2013_cor,
+                    filter(mzdata, experiment == "2014")
+                    )
 
 # write data -----------------------------------------------------------------
-save(mzdata_final, file = "./data/mzdata.rda", compress = "bzip2")
+save(mzdata, file = "./data/mzdata.rda", compress = "bzip2")
 save(metadata, file = "./data/metadata.rda", compress = "bzip2")
 
 ## Data documentation ----------------------------------------------------------
