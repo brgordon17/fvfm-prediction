@@ -33,10 +33,8 @@ validation_data <-
 
 # tuning grid
 # Consider changing from sqrt(p) to p/3 (used for regression)
-tunegrid <- expand.grid(.mtry = c(25, 50, 75, 
-                                  floor(sqrt(length(mzdata2013))),
-                                  floor(sqrt(length(mzdata2013))) + 25,
-                                  floor(sqrt(length(mzdata2013))) + 50))
+tunegrid <- expand.grid(.mtry = c(25, 50, 75, 100, 200, 300, 400, 500, 1000,
+                                  2000, floor(length(train_data)/3)))
 
 # set seeds
 set.seed(1978)
@@ -71,6 +69,8 @@ test_pred <- predict(mzrf, newdata = test_data)
 
 # test data prediction metrics
 postResample(pred = test_pred, obs = test_data$FvFm)
+
+# save as temporary file
 
 # NOTE: the prediction metrics for the validation data are poor. Explore higher
 # values of mtry and removing highly correllated predictors etc. Also, consider
