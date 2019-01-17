@@ -71,33 +71,4 @@ test_pred <- predict(mzrf, newdata = test_data)
 postResample(pred = test_pred, obs = test_data$FvFm)
 
 # save as temporary file
-
-# NOTE: the prediction metrics for the validation data are poor. Explore higher
-# values of mtry and removing highly correllated predictors etc. Also, consider
-# that the model may need to be trained with some of the data from other
-# experiments.
-# predict validation data
-#val_pred <- predict(mzrf, newdata = validation_data)
-
-# validation data prediction metrics
-#postResample(pred = val_pred, obs = validation_data$FvFm)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+saveRDS(mzrf, "./dev/mzrf_model.rds")
