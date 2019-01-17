@@ -13,7 +13,7 @@ mzdata2013 <-
 mzdata2013 <- droplevels(mzdata2013)
 
 # Check for near zero variance
-nearZeroVar(mzdata2013[-1:-7], saveMetrics = TRUE)
+nearZeroVar(mzdata2013[-1:-7])
 
 # Check for highly correlated predictors (mz variables)
 # Consider removing these later to see if model improves
@@ -77,10 +77,10 @@ postResample(pred = test_pred, obs = test_data$FvFm)
 # that the model may need to be trained with some of the data from other
 # experiments.
 # predict validation data
-val_pred <- predict(mzrf, newdata = validation_data)
+#val_pred <- predict(mzrf, newdata = validation_data)
 
 # validation data prediction metrics
-postResample(pred = val_pred, obs = validation_data$FvFm)
+#postResample(pred = val_pred, obs = validation_data$FvFm)
 
 
 
