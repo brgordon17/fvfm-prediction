@@ -23,7 +23,7 @@ validation_data <-
   filter(experiment != "2013" & FvFm != "NA")
 validation_data <- data.frame(droplevels(validation_data))
 
-# Model ------------------------------------------------------------------------
+# Model optimisation with auto grid --------------------------------------------
 
 ctrl <- caret::trainControl(method = "repeatedcv",
                             number = 10,
@@ -50,6 +50,5 @@ postResample(pred = test_pred, obs = test_data$FvFm)
 # save as temporary file
 saveRDS(mzboost, "./dev/mzboost_model.rds")
 
-# mzrf <- read_rds("./dev/mzrf_model.rds")
-
-
+# Finished. Model is slightly better than RF and the prediction of test samples
+# was noticably better. Manual tuning did not result in an improved model.
