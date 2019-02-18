@@ -49,7 +49,7 @@ mzdata <- mzdata[-grep("[M+4]", mzdata$isotopes, fixed = TRUE),]
 
 # Clean up ---------------------------------------------------------------------
 mzdata <- dplyr::select(mzdata, -isotopes, -adduct, -pcgroup)
-mzdata <- mzdata[-2:-34]
+mzdata <- mzdata[-2:-20]
 
 mz_names <- round(mzdata[, 1], 5)
 mz_names <- paste("mz", mz_names$mz, sep = "_")
@@ -61,53 +61,31 @@ mzdata <- mzdata[-1, ]
   
 # Create metadata -------------------------------------------------------------
 metadata <- tibble(sample_id = mzdata$sample_id,
-                   class = factor(c(rep("2011-T2-C", 6),
-                                    rep("2011-T2-T", 3),
-                                    rep("2011-T3-C", 6),
-                                    rep("2011-T3-T", 6),
-                                    rep("2011-T4-C", 6),
-                                    rep("2011-T4-T", 6),
-                                    rep("2013-PBQC", 18),
-                                    rep("2013-T0-C", 12),
-                                    rep("2013-T0-T", 12),
-                                    rep("2013-T1-C", 12),
-                                    rep("2013-T1-T", 9),
-                                    rep("2013-T2-C", 12),
-                                    rep("2013-T2-T", 12),
-                                    rep("2013-T3-C", 12),
-                                    rep("2013-T3-T", 12),
-                                    rep("2013-T4-C", 12),
-                                    rep("2013-T4-T", 12),
-                                    rep("2013-T5-C", 12),
-                                    rep("2013-T5-T", 12),
-                                    rep("2014-T1-C", 10),
-                                    rep("2014-T1-T", 10),
-                                    rep("2014-T2-C", 10),
-                                    rep("2014-T2-T", 10),
-                                    rep("2014-T3-C", 10),
-                                    rep("2014-T3-T", 8),
-                                    rep("2014-T4-C", 9),
-                                    rep("2014-T4-T", 10)
+                   class = factor(c(rep("PBQC", 18),
+                                    rep("T0-C", 12),
+                                    rep("T0-T", 12),
+                                    rep("T1-C", 12),
+                                    rep("T1-T", 9),
+                                    rep("T2-C", 12),
+                                    rep("T2-T", 12),
+                                    rep("T3-C", 12),
+                                    rep("T3-T", 12),
+                                    rep("T4-C", 12),
+                                    rep("T4-T", 12),
+                                    rep("T5-C", 12),
+                                    rep("T5-T", 12)
                                     )),
-                   batch = factor(c(rep("none", 51),
+                   batch = factor(c(rep("batch 1", 1),
+                                    rep("batch 2", 3),
+                                    rep(c("batch 1", "batch 2"), 6),
+                                    rep("batch 2", 2),
                                     rep("batch 2", 24),
                                     rep("batch 1", 21),
                                     rep("batch 2", 48),
                                     rep("batch 1", 24),
-                                    rep("batch 2", 24),
-                                    rep("none", 77)
+                                    rep("batch 2", 24)
                                     )),
-                   experiment = factor(c(rep("2011", 33),
-                                         rep("2013", 159),
-                                         rep("2014", 77)
-                                         )),
-                   day = factor(c(rep("day 4", 6),
-                                  rep("day 4", 3),
-                                  rep("day 6", 6),
-                                  rep("day 6", 6),
-                                  rep("day 14", 6),
-                                  rep("day 14", 6),
-                                  rep("PBQC", 18),
+                   day = factor(c(rep("PBQC", 18),
                                   rep("day 1", 12),
                                   rep("day 1", 12),
                                   rep("day 5", 12),
@@ -119,23 +97,9 @@ metadata <- tibble(sample_id = mzdata$sample_id,
                                   rep("day 12", 12),
                                   rep("day 12", 12),
                                   rep("day 15", 12),
-                                  rep("day 15", 12),
-                                  rep("day 3", 10),
-                                  rep("day 3", 10),
-                                  rep("day 9", 10),
-                                  rep("day 9", 10),
-                                  rep("day 11", 10),
-                                  rep("day 11", 8),
-                                  rep("day 13", 9),
-                                  rep("day 13", 10)
+                                  rep("day 15", 12)
                                   )),
-                   cont_treat = factor(c(rep("C", 6),
-                                         rep("T", 3),
-                                         rep("C", 6),
-                                         rep("T", 6),
-                                         rep("C", 6),
-                                         rep("T", 6),
-                                         rep("PBQC", 18),
+                   cont_treat = factor(c(rep("PBQC", 18),
                                          rep("C", 12),
                                          rep("T", 12),
                                          rep("C", 12),
@@ -147,25 +111,10 @@ metadata <- tibble(sample_id = mzdata$sample_id,
                                          rep("C", 12),
                                          rep("T", 12),
                                          rep("C", 12),
-                                         rep("T", 12),
-                                         rep("C", 10),
-                                         rep("T", 10),
-                                         rep("C", 10),
-                                         rep("T", 10),
-                                         rep("C", 10),
-                                         rep("T", 8),
-                                         rep("C", 9),
-                                         rep("T", 10)
-                                         ), 
+                                         rep("T", 12)), 
                                        levels = c("C", "T", "PBQC")
                                        ),
-                   FvFm = c(rep(0.613, 6),
-                            rep(0.578, 3),
-                            rep(0.610, 6),
-                            rep(0.523, 6),
-                            rep(0.720, 6),
-                            rep(0.502, 6),
-                            rep(NA, 18),
+                   FvFm = c(rep(NA, 18),
                             rep(0.652, 12),
                             rep(0.646, 12),
                             rep(0.657, 12),
@@ -177,15 +126,7 @@ metadata <- tibble(sample_id = mzdata$sample_id,
                             rep(0.643, 12),
                             rep(0.304, 12),
                             rep(0.659, 12),
-                            rep(0.000, 12),
-                            rep(NA, 10),
-                            rep(NA, 10),
-                            rep(0.666, 10),
-                            rep(0.511, 10),
-                            rep(NA, 10),
-                            rep(NA, 8),
-                            rep(0.664, 9),
-                            rep(0.600, 10)
+                            rep(0.000, 12)
                             ))
 
 mzdata <- bind_cols(metadata, mzdata[-1])
@@ -193,7 +134,7 @@ mzdata <- type_convert(mzdata)
 
 # Impute missing values --------------------------------------------------------
 round(mean(is.na(mzdata))*100, 2)
-mzdata_filt <- MissingValues(mzdata[c(-1, -3:-7)],
+mzdata_filt <- MissingValues(mzdata[c(-1, -3:-6)],
                              column.cutoff = 0.8,
                              group.cutoff = 0.65,
                              complete.matrix = TRUE,
@@ -213,16 +154,16 @@ rm(mzdata_filt, mz_names)
 #   mzdata %>% 
 #   filter(cont_treat == "PBQC")
 
-mzdata2013 <- 
-  mzdata %>% 
-  filter(experiment == "2013" & cont_treat != "PBQC")
+# mzdata2013 <- 
+#   mzdata %>% 
+#   filter(experiment == "2013" & cont_treat != "PBQC")
 
 # mzdata2014 <-
 #   mzdata %>%
 #   filter(experiment == "2014")
 
 # Create across group relative log abundance plot
-box_orig <- ggplot(data = reshape2::melt(mzdata2013),
+box_orig <- ggplot(data = reshape2::melt(mzdata[-6]),
                    aes(x = sample_id, 
                        y = log(value, 2) - median(log(value, 2)),
                        fill = batch)) +
@@ -240,27 +181,26 @@ box_orig <- ggplot(data = reshape2::melt(mzdata2013),
 box_orig
 
 # Remove batch effects ---------------------------------------------------------
-metadata2013 <- mzdata2013[1:7] 
-harmdata <- as.data.frame(t(mzdata2013[-1:-7]))
+harmdata <- as.data.frame(t(mzdata[-1:-6]))
 harmdata <- log(harmdata, 2)
-colnames(harmdata) <- metadata2013$sample_id
+colnames(harmdata) <- mzdata$sample_id
 
 # Run Harman
 harm <- harman(harmdata, 
-               expt = metadata2013$cont_treat, 
-               batch = metadata2013$batch,
+               expt = mzdata$cont_treat, 
+               batch = mzdata$batch,
                limit = 0.95)
-#summary(harmdata_cor)
+#summary(harm)
 
 # Reconstruct the data
-mzdata2013_cor <- tibble::as_tibble(t(reconstructData(harm)))
-mzdata2013_cor <- 2^mzdata2013_cor
-mzdata2013_cor <- dplyr::bind_cols(metadata2013, mzdata2013_cor)
+mzdata_cor <- tibble::as_tibble(t(reconstructData(harm)))
+mzdata_cor <- 2^mzdata_cor
+mzdata_cor <- dplyr::bind_cols(metadata, mzdata_cor)
 
 # Explore variation ------------------------------------------------------------
 
 # across group relative log abundance plot
-box_cor <- ggplot(data = reshape2::melt(mzdata2013_cor),
+box_cor <- ggplot(data = reshape2::melt(mzdata_cor[-6]),
                   aes(x = sample_id, 
                       y = log(value, 2) - median(log(value, 2)),
                       fill = batch)) +
@@ -279,12 +219,12 @@ box_cor
 
 # PCA plot original
 set.seed(1978)
-pca_orig <- stats::prcomp(mzdata2013[-1:-7], 
+pca_orig <- stats::prcomp(mzdata[-1:-6], 
                           scale = FALSE, 
                           center = TRUE)
 
 exp_var_orig <- summary(pca_orig)$importance[2 ,]
-scores_orig <- data.frame(mzdata2013[, 2:7], pca_orig$x)
+scores_orig <- data.frame(metadata, pca_orig$x)
 x_lab_orig <- paste("PC1", " (", round(exp_var_orig[1] * 100, 2), "%)", sep =  "")
 y_lab_orig <- paste("PC2", " (", round(exp_var_orig[2] * 100, 2), "%)", sep =  "")
 
@@ -316,12 +256,13 @@ pca_orig <-
         legend.text = element_text(size = 10))
 pca_orig
 
-# PCA plot corrected
+# PCA plot corrected (PBQCs excluded)
 set.seed(1978)
-pca_cor <- stats::prcomp(mzdata2013_cor[-1:-7], scale = FALSE, center = TRUE)
+pca_data <- filter(mzdata_cor, cont_treat != "PBQC")
+pca_cor <- stats::prcomp(pca_data[-1:-6], scale = FALSE, center = TRUE)
 
 exp_var_cor <- summary(pca_cor)$importance[2 ,]
-scores_cor <- data.frame(mzdata2013[, 2:7], pca_cor$x)
+scores_cor <- data.frame(filter(metadata, cont_treat != "PBQC"), pca_cor$x)
 x_lab_cor <- paste("PC1", " (", round(exp_var_cor[1] * 100, 2), "%)", sep =  "")
 y_lab_cor <- paste("PC2", " (", round(exp_var_cor[2] * 100, 2), "%)", sep =  "")
 
@@ -339,7 +280,7 @@ pca_cor_CvsT <-
                                         height = 0.01 * diff(range(scores_cor$PC2))
              )) +
   labs(x = x_lab_cor, y = y_lab_cor) +
-  scale_shape_manual(values = c(21, 22)) +
+  scale_shape_manual(values = c(21:23)) +
   scale_color_manual(values = grDevices::adjustcolor(gordon01::qual_colours,
                                                      alpha.f = 0.9)) +
   scale_fill_manual(values = grDevices::adjustcolor(gordon01::qual_colours,
@@ -384,11 +325,7 @@ pca_cor_batch <-
 pca_cor_batch
 
 # rebuild mzdata ---------------------------------------------------------------
-mzdata <- bind_rows(filter(mzdata, experiment == "2011"),
-                    filter(mzdata, cont_treat == "PBQC"),
-                    mzdata2013_cor,
-                    filter(mzdata, experiment == "2014")
-                    )
+mzdata <- mzdata_cor
 
 # write data -----------------------------------------------------------------
 save(mzdata, file = "./data/mzdata.rda", compress = "bzip2")
