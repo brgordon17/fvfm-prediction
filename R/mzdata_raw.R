@@ -19,34 +19,20 @@ mzfiles <- list.files(path = "~/Big Data/LCMS Data/chapter5_mzxml",
 # create metadata or phenodata
 phenod <- data.frame(sample_name = sub(basename(mzfiles), pattern = ".mzXML",
                                        replacement = "", fixed = TRUE),
-                     class = c(rep("2011-T2-C", 6), 
-                               rep("2011-T2-T", 3),
-                               rep("2011-T3-C", 6),
-                               rep("2011-T3-T", 6),
-                               rep("2011-T4-C", 6),
-                               rep("2011-T4-T", 6),
-                               rep("2013-PBQC", 18),
-                               rep("2013-T0-C", 12),
-                               rep("2013-T0-T", 12),
-                               rep("2013-T1-C", 12),
-                               rep("2013-T1-T", 9),
-                               rep("2013-T2-C", 12),
-                               rep("2013-T2-T", 12),
-                               rep("2013-T3-C", 12),
-                               rep("2013-T3-T", 12),
-                               rep("2013-T4-C", 12),
-                               rep("2013-T4-T", 12),
-                               rep("2013-T5-C", 12),
-                               rep("2013-T5-T", 12),
-                               rep("2014-T1-C", 10),
-                               rep("2014-T1-T", 10),
-                               rep("2014-T2-C", 10),
-                               rep("2014-T2-T", 10),
-                               rep("2014-T3-C", 10),
-                               rep("2014-T3-T", 8),
-                               rep("2014-T4-C", 9),
-                               rep("2014-T4-T", 10)
-                     ),
+                     class = c(rep("PBQC", 18),
+                               rep("T0-C", 12),
+                               rep("T0-T", 12),
+                               rep("T1-C", 12),
+                               rep("T1-T", 9),
+                               rep("T2-C", 12),
+                               rep("T2-T", 12),
+                               rep("T3-C", 12),
+                               rep("T3-T", 12),
+                               rep("T4-C", 12),
+                               rep("T4-T", 12),
+                               rep("T5-C", 12),
+                               rep("T5-T", 12)
+                               ),
                      stringsAsFactors = FALSE)
 
 # load raw data and save
@@ -120,7 +106,7 @@ saveRDS(mzdata, "./data-raw/temp-saves/xsAnnotate.rds")
 mzdata_raw <- tibble::as_tibble(CAMERA::getPeaklist(mzdata))
 
 # reattach sample names
-names(mzdata_raw)[35:303] <- phenod$sample_name
+names(mzdata_raw)[21:179] <- phenod$sample_name
 
 # save mzdata-raw as csv
 readr::write_csv(mzdata_raw, "./data-raw/mzdata-raw.csv")
