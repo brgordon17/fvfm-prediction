@@ -7,21 +7,18 @@ library(tidyverse)
 # Data -------------------------------------------------------------------------
 load("./data/mzdata.rda")
 
-mzdata2013 <-
+mzdata <-
   mzdata %>%
-  filter(experiment == "2013" & cont_treat != "PBQC")
-mzdata2013 <- data.frame(droplevels(mzdata2013))
+  filter(cont_treat != "PBQC")
+mzdata <- data.frame(droplevels(mzdata))
 
 # Partition data into training, test and validation sets
-train_index <- createDataPartition(mzdata2013$FvFm,
+set.seed(1978)
+train_index <- createDataPartition(mzdata$FvFm,
                                    p = 0.8,
                                    list = FALSE)
-train_data <- mzdata2013[train_index, ]
-test_data  <- mzdata2013[-train_index, ]
-validation_data <- 
-  mzdata %>%
-  filter(experiment != "2013" & FvFm != "NA")
-validation_data <- data.frame(droplevels(validation_data))
+train_data <- mzdata[train_index, ]
+test_data  <- mzdata[-train_index, ]
 
 # Model optimisation with auto grid --------------------------------------------
 
@@ -32,7 +29,7 @@ ctrl <- caret::trainControl(method = "repeatedcv",
 
 doMC::registerDoMC()
 set.seed(1978)
-mzboost <- caret::train(x = train_data[, -1:-7],
+mzboost <- caret::train(x = train_data[, -1:-6],
                         y = train_data$FvFm,
                         method = "xgbTree",
                         trControl = ctrl,
@@ -44,11 +41,13 @@ mzboost <- caret::train(x = train_data[, -1:-7],
 
 test_pred <- predict(mzboost, newdata = test_data)
 
+# Check pred vs actual
+preds <- bind_cols(id = test_data$sample_id,
+                  pred = test_pred, 
+                  actual = test_data$FvFm)
+
 # test data prediction metrics
 postResample(pred = test_pred, obs = test_data$FvFm)
 
 # save as temporary file
 saveRDS(mzboost, "./dev/mzboost_model.rds")
-
-# Finished. Model is slightly better than RF and the prediction of test samples
-# was noticably better. Manual tuning did not result in an improved model.
