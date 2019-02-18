@@ -5,24 +5,21 @@ library(tidyverse)
 
 load("./data/mzdata.rda")
 
-# Pull out 2013 data. Exclude PBQCs
-mzdata2013 <- filter(mzdata, experiment == "2013" & cont_treat != "PBQC")
-
 # PCA
 set.seed(1978)
-pca <- stats::prcomp(mzdata2013[-1:-7], 
+pca <- stats::prcomp(mzdata[-1:-6], 
                      scale = FALSE, 
                      center = TRUE)
   
 # Define variables for plot
 exp_var <- summary(pca)$importance[2 ,]
-scores <- data.frame(mzdata2013[, 1:7], pca$x)
+scores <- data.frame(mzdata[, 1:6], pca$x)
 x_lab <- paste("PC1", " (", round(exp_var[1] * 100, 2), "%)", sep =  "")
 y_lab <- paste("PC2", " (", round(exp_var[2] * 100, 2), "%)", sep =  "")
 custom_colours <- gordon01::qual_colours[c(1, 2, 7)]
   
 # create plot
-classplot <-
+pcaplot <-
   ggplot(data = scores,
           aes(x = PC1,
               y = PC2,
@@ -51,4 +48,4 @@ classplot <-
         axis.title.x = element_text(size = 12),
         legend.key = element_rect(fill = "transparent", colour = NA),
         legend.text = element_text(size = 10))
-classplot
+pcaplot
