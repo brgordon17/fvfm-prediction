@@ -7,9 +7,7 @@ library(tidyverse)
 # Data -------------------------------------------------------------------------
 load("./data/mzdata.rda")
 
-mzdata <-
-  mzdata %>%
-  filter(cont_treat != "PBQC")
+mzdata <- filter(mzdata, cont_treat != "PBQC")
 mzdata <- data.frame(droplevels(mzdata))
 
 # Partition data into training, test and validation sets
