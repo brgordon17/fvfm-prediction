@@ -7,34 +7,21 @@ library(caret)
 # data
 load("./data/mzdata.rda")
 
-mzdata2013 <-
-  mzdata %>%
-  filter(experiment == "2013" & cont_treat != "PBQC")
-mzdata2013 <- droplevels(mzdata2013)
-
-# Check for near zero variance
-nearZeroVar(mzdata2013[-1:-7])
-
-# Check for highly correlated predictors (mz variables)
-# Consider removing these later to see if model improves
-cormat <- cor(mzdata2013[-1:-7])
-highlyCorDescr <-findCorrelation(cormat)
-rm(cormat)
+mzdata <- filter(mzdata, cont_treat != "PBQC")
+mzdata <- data.frame(droplevels(mzdata))
 
 # Partition data into training, test and validation sets
-train_index <- createDataPartition(mzdata2013$FvFm,
+set.seed(1978)
+train_index <- createDataPartition(mzdata$FvFm,
                                    p = 0.8,
                                    list = FALSE)
-train_data <- mzdata2013[train_index, ]
-test_data  <- mzdata2013[-train_index, ]
-validation_data <- 
-  mzdata %>%
-  filter(experiment != "2013" & FvFm != "NA")
+train_data <- mzdata[train_index, ]
+test_data  <- mzdata[-train_index, ]
 
 # tuning grid
 # Consider changing from sqrt(p) to p/3 (used for regression)
 tunegrid <- expand.grid(.mtry = c(25, 50, 75, 100, 200, 300, 400, 500, 1000,
-                                  2000, floor(length(train_data)/3)))
+                                  floor(length(train_data)/3)))
 
 # set seeds
 set.seed(1978)
@@ -54,7 +41,7 @@ ctrl <- caret::trainControl(method = "repeatedcv",
 # Create model
 doMC::registerDoMC()
 set.seed(1978)
-mzrf <- caret::train(x = train_data[, -1:-7],
+mzrf <- caret::train(x = train_data[, -1:-6],
                      y = train_data$FvFm,
                      method = "rf",
                      trControl = ctrl,
@@ -69,6 +56,11 @@ test_pred <- predict(mzrf, newdata = test_data)
 
 # test data prediction metrics
 postResample(pred = test_pred, obs = test_data$FvFm)
+
+# Compare pred vs actual
+preds <- bind_cols(id = test_data$sample_id,
+                   pred = test_pred, 
+                   actual = test_data$FvFm)
 
 # save as temporary file
 saveRDS(mzrf, "./dev/mzrf_model.rds")
