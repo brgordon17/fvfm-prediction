@@ -18,6 +18,14 @@ train_index <- createDataPartition(mzdata$FvFm,
 train_data <- mzdata[train_index, ]
 test_data  <- mzdata[-train_index, ]
 
+# Partition data for multiple k-fold cv's (not used at this stage)
+# set.seed(1978)
+# train_index <- createDataPartition(mzdata$FvFm,
+#                                    p = 0.8,
+#                                    times = 3,
+#                                    list = FALSE)
+# test_index <- apply(train_index, 2, function(x) setdiff(1:141, x))
+
 # tuning grid
 # Consider changing from sqrt(p) to p/3 (used for regression)
 tunegrid <- expand.grid(.mtry = c(25, 50, 75, 100, 200, 300, 400, 500, 1000,
