@@ -54,17 +54,17 @@ mzrf_fvfm <- caret::train(x = train_data[, -1:-6],
                      y = train_data$FvFm,
                      method = "rf",
                      trControl = ctrl,
-                     preProc = c("center", "scale"),
+                     #preProc = c("center", "scale"),
                      allowParallel = TRUE,
                      importance = TRUE,
                      tuneGrid = tunegrid
                      )
 # email notification
-# use_secret_file("~/Documents/R/R_emails/R-emails.json")
-# send_message(mime(To = "benjamin.gordon@my.jcu.edu.au",
-#                   From = "brgordon17@gmail.com",
-#                   Subject = "Analysis complete",
-#                   body = "Your R process has finished."))
+use_secret_file("~/Documents/R/R_emails/R-emails.json")
+send_message(mime(To = "benjamin.gordon@my.jcu.edu.au",
+                  From = "brgordon17@gmail.com",
+                  Subject = "Analysis complete",
+                  body = "Your R process has finished."))
 
 # predict test data
 test_pred <- predict(mzrf_fvfm, newdata = test_data)
