@@ -1,7 +1,7 @@
 # Script to run anovas on PSII yield
 
 # load data
-load("./data/metadata.rda")
+load("./data/pamdata.rda")
 
 # Bonferroni post hoc ANOVA
 t0aov <- aov(FvFm ~ cont_treat, 
