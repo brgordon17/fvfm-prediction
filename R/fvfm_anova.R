@@ -1,29 +1,29 @@
 # Script to run anovas on PSII yield
 
+library(tidyverse)
+
 # load data
 load("./data/pamdata.rda")
 
-# Bonferroni post hoc ANOVA
-t0aov <- aov(FvFm ~ cont_treat, 
-               data = metadata[metadata$day == "day 1", ])
-summary(t0aov)
+# students t-test
+pam_tests <- list(
+  "day_1" = t.test(yield ~ class,
+                   data = filter(pamdata, day == "day 1")),
+  "day_5" = t.test(yield ~ class,
+                   data = filter(pamdata, day == "day 5")),
+  "day_8" = t.test(yield ~ class,
+                   data = filter(pamdata, day == "day 8")),
+  "day_10" = t.test(yield ~ class,
+                    data = filter(pamdata, day == "day 10")),
+  "day_12" = t.test(yield ~ class,
+                    data = filter(pamdata, day == "day 12")),
+  "day_15" = t.test(yield ~ class,
+                    data = filter(pamdata, day == "day 15"))
+  )
+str(pam_tests)
 
-ttest_day1 <- pairwise.t.test(metadata$FvFm[metadata$day == "day 1"],
-                              metadata$cont_treat[metadata$day == "day 1"],
-                              p.adjust.method = "bonferroni")
-
-
-
-
-
-pairwise.t.test(celldens$density[celldens$day == "day 5"],
-                celldens$class[celldens$day == "day 5"],
-                p.adjust.method = "bonferroni")
-
-pairwise.t.test(celldens$density[celldens$day == "day 10"],
-                celldens$class[celldens$day == "day 10"],
-                p.adjust.method = "bonferroni")
-
-pairwise.t.test(celldens$density[celldens$day == "day 14"],
-                celldens$class[celldens$day == "day 14"],
-                p.adjust.method = "bonferroni")
+# construct df
+pam_tests <- data.frame(pval = sapply(pam_tests, "[[", "p.value"),
+                        t_stat = sapply(pam_tests, "[[", "statistic"),
+                        df = sapply(pam_tests, "[[", "parameter")
+                        )
