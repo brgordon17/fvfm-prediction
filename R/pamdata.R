@@ -23,7 +23,7 @@ pamdata <- lapply(pamdata, function(x) x[-2:-nrow(x), ])
 # convert list to a single df
 pamdata <- bind_rows(pamdata)
 
-# add variables for class and day
+# add variables for class, day and collect (logical)
 class <- factor(c(rep("control", 15),
                 rep("treatment", 15))
                 )
@@ -32,19 +32,22 @@ day <- factor(c(sprintf("day %d", seq(1:15)),
                 ),
               levels = sprintf("day %d", seq(1:15))
               )
-pamdata <- bind_cols(class = class, day = day, pamdata)
+collect <- day %in% c("day 1", "day 5", "day 8", "day 10", "day 12",
+                      "day 15")
+
+pamdata <- bind_cols(class = class, day = day, collect = collect, pamdata)
 
 # merge date and time columns
 pamdata$Date <- gsub("\\.", "-", pamdata$Date)
-colnames(pamdata)[3] <- "date"
-colnames(pamdata)[4] <- "time"
+colnames(pamdata)[4] <- "date"
+colnames(pamdata)[5] <- "time"
 pamdata$date <- as.POSIXct(paste(pamdata$date, pamdata$time), 
                            format = "%d-%m-%y %H:%M:%S")
 pamdata$time <- NULL
 
 # remove days where sampling wasnt performed
-pamdata <- filter(pamdata, day %in% c("day 1", "day 5", "day 8", "day 10", 
-                    "day 12", "day 15"))
+#pamdata <- filter(pamdata, day %in% c("day 1", "day 5", "day 8", "day 10", 
+#                    "day 12", "day 15"))
 
 # gather df to long format
 pamdata <- gather(pamdata, key = "rep", value = "yield", "Y(II)1":"Y(II)12")
