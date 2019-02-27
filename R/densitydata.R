@@ -12,3 +12,6 @@ densitydata <- tibble(day = c(1, 1, 5, 5, 8, 8, 10, 10, 12, 12, 15, 15),
                                 1730994, 1684769, 1308929, 1781139, 1325810, 
                                 1610346, 697616)
                       )
+
+# Save
+save(densitydata, file = "./data/densitydata.rda", compress = "bzip2")
