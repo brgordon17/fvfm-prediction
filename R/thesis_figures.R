@@ -69,7 +69,8 @@ dens <- ggplot(filter(densitydata, day != "1" & day != "5"),
   scale_x_continuous(name = "Time (days)", 
                      breaks = c(8, 10, 12, 15), 
                      labels = c(8, 10, 12, 15)) +
-  scale_y_continuous(name = expression(Cell~Density~(10^6~cells~cm^-2))) +
+  scale_y_continuous(name = expression(Cell~Density~(10^6~cells~cm^-2)),
+                     limits = c(0, 2)) +
   scale_colour_manual(values = gordon01::qual_colours, 
                       name = NULL,
                       labels = c("control", "heated")) +
@@ -98,7 +99,8 @@ chl <- ggplot(filter(chlorodata, day != "1" & day != "5"),
   scale_x_continuous(name = "Time (days)", 
                      breaks = c(1, 5, 8, 10, 12, 15), 
                      labels = c(1, 5, 8, 10, 12, 15)) +
-  scale_y_continuous(name = expression(Chl~a~(pg~cell^-1))) +
+  scale_y_continuous(name = expression(Chl~a~(pg~cell^-1)),
+                     limits = c(0, 1)) +
   scale_colour_manual(values = gordon01::qual_colours, 
                       name = NULL,
                       labels = c("control", "heated")) +
