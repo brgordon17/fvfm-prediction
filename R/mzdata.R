@@ -165,22 +165,27 @@ rm(mzdata_filt, mz_names)
 #   filter(experiment == "2014")
 
 # Create across group relative log abundance plot
-box_orig <- ggplot(data = reshape2::melt(mzdata[-6]),
+box_raw <- ggplot(data = reshape2::melt(mzdata[-6]),
                    aes(x = sample_id, 
                        y = log(value, 2) - median(log(value, 2)),
                        fill = batch)) +
   geom_boxplot(outlier.alpha = 0.4,
                outlier.size = 1) +
-  labs(x = "Samples", y = "Relative log Abundance") +
   scale_fill_manual(values = gordon01::qual_colours) +
+  scale_x_discrete(name = NULL) +
+  scale_y_continuous(name = "Relative log Abundance") +
   theme(panel.background = element_blank(),
-        axis.text.y = element_text(size = 10, colour = "grey70"),
+        axis.text.y = element_text(size = 10, colour = "grey65"),
         axis.text.x = element_blank(),
-        axis.title.y = element_text(size = 12),
-        axis.title.x = element_text(size = 12),
+        axis.title.y = element_text(size = 12, colour = "grey65"),
+        axis.title.x = element_text(size = 12, colour = "grey65"),
         axis.ticks = element_blank(),
-        legend.text = element_text(size = 10))
-box_orig
+        legend.text = element_text(size = 10),
+        legend.title = element_blank())
+box_raw
+
+# save ggplot obj
+saveRDS(box_raw, "./dev/box_raw_ggobj.rds")
 
 # Remove batch effects ---------------------------------------------------------
 harmdata <- as.data.frame(t(mzdata[-1:-6]))
