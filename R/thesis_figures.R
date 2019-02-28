@@ -163,3 +163,170 @@ gridExtra::grid.arrange(gridExtra::arrangeGrob(plot_a,
                         nrow = 2,
                         heights = c(12, 1))
 grDevices::dev.off()
+
+# composite figure of relative log abundance -----------------------------------
+library(tidyverse)
+
+# Load data 
+load("./data/mzdata.rda")
+box_raw <- read_rds("./dev/box_raw_ggobj.rds")
+
+# RLA of corrected data
+box_cor <- ggplot(data = reshape2::melt(filter(mzdata[-6], class != "PBQC")),
+                  aes(x = sample_id, 
+                      y = log(value, 2) - median(log(value, 2)),
+                      fill = batch)) +
+  geom_boxplot(outlier.alpha = 0.4,
+               outlier.size = 1) +
+  scale_fill_manual(values = gordon01::qual_colours) +
+  scale_x_discrete(name = NULL) +
+  scale_y_continuous(name = "Relative log Abundance") +
+  theme(panel.background = element_blank(),
+        axis.text.y = element_text(size = 10, colour = "grey65"),
+        axis.text.x = element_blank(),
+        axis.title.y = element_blank(),
+        axis.title.x = element_text(size = 12, colour = "grey65"),
+        axis.ticks = element_blank(),
+        legend.text = element_text(size = 10),
+        legend.title = element_blank(),
+        legend.position = "bottom")
+box_cor
+
+# Extract Legend -------------------------------------------------------------
+g_tab <- ggplot_gtable(ggplot_build(box_cor))
+leg <- which(sapply(g_tab$grobs, function(x) x$name) == "guide-box")
+legend <- g_tab$grobs[[leg]]
+rm(g_tab, leg)
+
+# create grobs
+plot_a <-
+  gridExtra::arrangeGrob(box_raw +
+                           theme(legend.position = "none"),
+                         top = grid::textGrob("a", 
+                                              x = grid::unit(0.017, "npc"),
+                                              y = grid::unit(0.5, "npc"),
+                                              just = c("left", "top"),
+                                              gp = grid::gpar(fontsize = 16)
+                                              ))
+
+plot_b <-
+  gridExtra::arrangeGrob(box_cor +
+                           theme(legend.position = "none"),
+                         top = grid::textGrob("b",
+                                              x = grid::unit(0.017, "npc"),
+                                              y = grid::unit(0.5, "npc"),
+                                              just = c("left", "top"),
+                                              gp = grid::gpar(fontsize = 16)
+                                              ))
+
+xgrob <- gridExtra::arrangeGrob(grid::textGrob("Sample",
+                                               x = grid::unit(0.6, "npc"),
+                                               y = grid::unit(0.5, "npc"),
+                                               just = c("centre"),
+                                               gp = grid::gpar(fontsize = 12,
+                                                               col = "grey65")),
+                                right = legend)
+
+# print plot
+gridExtra::grid.arrange(gridExtra::arrangeGrob(plot_a,
+                                               plot_b,
+                                               nrow = 1),
+                        xgrob,
+                        nrow = 2,
+                        heights = c(12, 1))
+
+# Save plot
+grDevices::pdf("./figs/RLA_plot.pdf",
+               width = 10,
+               height = 3.5,
+               useDingbats = FALSE)
+gridExtra::grid.arrange(gridExtra::arrangeGrob(plot_a,
+                                               plot_b,
+                                               nrow = 1),
+                        xgrob,
+                        nrow = 2,
+                        heights = c(12, 1))
+grDevices::dev.off()
+
+
+
+
+
+
+
+
+
+
+
+
+
+# PCA plot ----------------------------------
+
+mzdata <- filter(mzdata, class != "PBQC")
+
+# PCA of batch corrected data (PBQCs excluded)
+set.seed(1978)
+pca <- stats::prcomp(mzdata[-1:-6], 
+                     scale = FALSE, 
+                     center = TRUE)
+
+exp_var <- summary(pca)$importance[2 ,]
+scores <- data.frame(mzdata[, 1:6], pca$x)
+x_lab <- paste("PC1", " (", round(exp_var[1] * 100, 2), "%)", sep =  "")
+y_lab <- paste("PC2", " (", round(exp_var[2] * 100, 2), "%)", sep =  "")
+custom_colours <- gordon01::qual_colours
+
+# create plot
+pcacor_plot <-
+  ggplot(data = scores,
+         aes(x = PC1,
+             y = PC2,
+             color = day,
+             fill = day,
+             shape = cont_treat)) +
+  geom_point(size = 2.5,
+             stroke = 0.7,
+             position = position_jitter(width = 0.01 * diff(range(scores$PC1)),
+                                        height = 0.01 * diff(range(scores$PC2))
+             )) +
+  labs(x = x_lab, y = y_lab) +
+  scale_shape_manual(name = NULL,
+                     values = c(21:25)) +
+  scale_color_manual(name = NULL,
+                     values = grDevices::adjustcolor(custom_colours,
+                                                     alpha.f = 0.9)) +
+  scale_fill_manual(name = NULL,
+                    values = grDevices::adjustcolor(custom_colours,
+                                                    alpha.f = 0.5)) +
+  theme(panel.background = element_blank(),
+        axis.ticks = element_blank(),
+        panel.grid.major = element_line(colour = "grey90"),
+        axis.text = element_text(size = 10, colour = "grey50"),
+        axis.title.y = element_text(size = 12),
+        axis.title.x = element_text(size = 12),
+        legend.key = element_rect(fill = "transparent", colour = NA),
+        legend.text = element_text(size = 10))
+pcacor_plot
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
