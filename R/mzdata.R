@@ -97,8 +97,10 @@ metadata <- tibble(sample_id = mzdata$sample_id,
                                   rep("day 12", 12),
                                   rep("day 12", 12),
                                   rep("day 15", 12),
-                                  rep("day 15", 12)
-                                  )),
+                                  rep("day 15", 12)),
+                                levels = c("day 1", "day 5", "day 8", "day 10",
+                                           "day 12", "day 15", "PBQC")
+                                ),
                    cont_treat = factor(c(rep("PBQC", 18),
                                          rep("C", 12),
                                          rep("T", 12),
