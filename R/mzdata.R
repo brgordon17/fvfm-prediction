@@ -165,7 +165,7 @@ rm(mzdata_filt, mz_names)
 #   filter(experiment == "2014")
 
 # Create across group relative log abundance plot
-box_raw <- ggplot(data = reshape2::melt(mzdata[-6]),
+box_raw <- ggplot(data = reshape2::melt(filter(mzdata[-6], class != "PBQC")),
                    aes(x = sample_id, 
                        y = log(value, 2) - median(log(value, 2)),
                        fill = batch)) +
