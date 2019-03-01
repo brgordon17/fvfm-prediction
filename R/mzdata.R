@@ -184,9 +184,6 @@ box_raw <- ggplot(data = reshape2::melt(filter(mzdata[-6], class != "PBQC")),
         legend.title = element_blank())
 box_raw
 
-# save ggplot obj
-saveRDS(box_raw, "./dev/box_raw_ggobj.rds")
-
 # Remove batch effects ---------------------------------------------------------
 harmdata <- as.data.frame(t(mzdata[-1:-6]))
 harmdata <- log(harmdata, 2)
@@ -337,6 +334,8 @@ mzdata <- mzdata_cor
 # write data -----------------------------------------------------------------
 save(mzdata, file = "./data/mzdata.rda", compress = "bzip2")
 save(metadata, file = "./data/metadata.rda", compress = "bzip2")
+saveRDS(box_raw, "./dev/box_raw_ggobj.rds")
+saveRDS(harm, "./dev/harman_corr.rds")
 
 ## Data documentation ----------------------------------------------------------
 
