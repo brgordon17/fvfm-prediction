@@ -248,20 +248,11 @@ gridExtra::grid.arrange(gridExtra::arrangeGrob(plot_a,
                         heights = c(12, 1))
 grDevices::dev.off()
 
-
-
-
-
-
-
-
-
-
-
-
-
 # PCA plot ----------------------------------
+library(tidyverse)
 
+# Load data 
+load("./data/mzdata.rda")
 mzdata <- filter(mzdata, class != "PBQC")
 
 # PCA of batch corrected data (PBQCs excluded)
@@ -271,7 +262,7 @@ pca <- stats::prcomp(mzdata[-1:-6],
                      center = TRUE)
 
 exp_var <- summary(pca)$importance[2 ,]
-scores <- data.frame(mzdata[, 1:6], pca$x)
+scores <- data.frame(mzdata[, 1:5], pca$x)
 x_lab <- paste("PC1", " (", round(exp_var[1] * 100, 2), "%)", sep =  "")
 y_lab <- paste("PC2", " (", round(exp_var[2] * 100, 2), "%)", sep =  "")
 custom_colours <- gordon01::qual_colours
@@ -291,7 +282,8 @@ pcacor_plot <-
              )) +
   labs(x = x_lab, y = y_lab) +
   scale_shape_manual(name = NULL,
-                     values = c(21:25)) +
+                     values = c(21, 24),
+                     label = c("control", "heated")) +
   scale_color_manual(name = NULL,
                      values = grDevices::adjustcolor(custom_colours,
                                                      alpha.f = 0.9)) +
@@ -301,32 +293,20 @@ pcacor_plot <-
   theme(panel.background = element_blank(),
         axis.ticks = element_blank(),
         panel.grid.major = element_line(colour = "grey90"),
-        axis.text = element_text(size = 10, colour = "grey50"),
-        axis.title.y = element_text(size = 12),
-        axis.title.x = element_text(size = 12),
+        axis.text = element_text(size = 10, colour = "grey80"),
+        axis.title.y = element_text(size = 12, colour = "grey50"),
+        axis.title.x = element_text(size = 12, colour = "grey50"),
         legend.key = element_rect(fill = "transparent", colour = NA),
-        legend.text = element_text(size = 10))
-pcacor_plot
+        legend.text = element_text(size = 11))
+pcacor_plot 
 
+ggsave("./figs/pca_plot.pdf",
+       width = 10,
+       height = 6.5,
+       units = "in")
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+# NOT USED
+# + stat_ellipse(data = filter(scores, cont_treat == "T" & day == "day 12" |
+#                              cont_treat == "T" & day == "day 15"),
+#              show.legend = FALSE,
+#              type = "norm")
