@@ -122,7 +122,7 @@ send_message(mime(To = "benjamin.gordon@my.jcu.edu.au",
 test_pred <- predict(mzrf_cvst, newdata = test_data)
 
 # test data prediction metrics
-postResample(pred = test_pred, obs = test_data$cont_treat)
+confusionMatrix(test_pred, test_data$cont_treat)
 
 # Compare pred vs actual
 preds <- bind_cols(id = test_data$sample_id,
