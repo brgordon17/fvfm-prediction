@@ -310,3 +310,110 @@ ggsave("./figs/pca_plot.pdf",
 #                              cont_treat == "T" & day == "day 15"),
 #              show.legend = FALSE,
 #              type = "norm")
+
+# Important variables plots ----------------------------------------------------
+
+# Load models 
+mzrf_fvfm <- readRDS("./dev/mzrf_model_fvfm.rds")
+mzrf_cvst <- readRDS("./dev/mzrf_model_cvst.rds")
+
+# Identify important variables 
+fvfm_impvars <- varImp(mzrf_fvfm, scale = TRUE)
+fvfm_impvars <- fvfm_impvars$importance
+fvfm_impvars <- cbind(vip = apply(fvfm_impvars, 1, max), fvfm_impvars)
+fvfm_impvars <- fvfm_impvars[order(-fvfm_impvars$vip), ,drop = FALSE]
+
+cvst_impvars <- varImp(mzrf_cvst, scale = TRUE)
+cvst_impvars <- cvst_impvars$importance
+cvst_impvars <- cbind(vip = apply(cvst_impvars, 1, max), cvst_impvars)
+cvst_impvars <- cvst_impvars[order(-cvst_impvars$vip), ,drop = FALSE]
+
+# clean up dfs and convert to tibbles
+rownames(fvfm_impvars) <- gsub("mz_", "", rownames(fvfm_impvars))
+fvfm_impvars <- cbind(mz = factor(rownames(fvfm_impvars),
+                                   levels = rev(rownames(fvfm_impvars))
+                                  ), fvfm_impvars)
+fvfm_impvars <- as_tibble(fvfm_impvars[1:20, ], rownames = NULL)
+
+rownames(cvst_impvars) <- gsub("mz_", "", rownames(cvst_impvars))
+cvst_impvars <- cbind(mz = factor(rownames(cvst_impvars),
+                                  levels = rev(rownames(cvst_impvars))
+                                  ), cvst_impvars)
+cvst_impvars <- tibble::as_tibble(cvst_impvars[1:20, ], rownames = NULL)
+
+# create plots 
+fvfm_plot <- ggplot(fvfm_impvars,
+                     aes(x = vip, y = mz)) +
+  geom_point(shape = 16,
+             colour = gordon01::seq_colours[4],
+             size = 3) +
+  theme(axis.ticks.y = element_blank(),
+        axis.ticks.x = element_blank(),
+        axis.text.x = element_text(size = 10,
+                                   colour = "grey70"),
+        axis.text.y = element_text(size = 10),
+        axis.title = element_blank(),
+        panel.background = element_blank(),
+        panel.grid.major.x = element_blank(),
+        panel.grid.minor.x = element_blank(),
+        panel.grid.major.y = element_line(colour = "grey90",
+                                          size = 0.4),
+        legend.position = "none")
+
+cvst_plot <- ggplot(cvst_impvars,
+                    aes(x = vip, y = mz)) +
+  geom_point(shape = 16,
+             colour = gordon01::seq_colours[4],
+             size = 3) +
+  theme(axis.ticks.y = element_blank(),
+        axis.ticks.x = element_blank(),
+        axis.text.x = element_text(size = 10,
+                                   colour = "grey70"),
+        axis.text.y = element_text(size = 10),
+        axis.title = element_blank(),
+        panel.background = element_blank(),
+        panel.grid.major.x = element_blank(),
+        panel.grid.minor.x = element_blank(),
+        panel.grid.major.y = element_line(colour = "grey90",
+                                          size = 0.4),
+        legend.position = "none")
+
+# Create composite plot and axis text grobs
+fvfm_plot <-
+  gridExtra::arrangeGrob(fvfm_plot,
+                         top = grid::textGrob("Quantum Yield",
+                                              x = grid::unit(0.5, "npc"),
+                                              y = grid::unit(0.5, "npc"),
+                                              gp = grid::gpar(fontsize = 12)))
+
+cvst_plot <-
+  gridExtra::arrangeGrob(cvst_plot,
+                         top = grid::textGrob("Class",
+                         x = grid::unit(0.5, "npc"),
+                         y = grid::unit(0.5, "npc"),
+                         gp = grid::gpar(fontsize = 12)))
+
+xgrob <- grid::textGrob("Variable Importance",
+                        x = grid::unit(0.5, "npc"),
+                        y = grid::unit(0.5, "npc"),
+                        just = c("centre"),
+                        gp = grid::gpar(fontsize = 12))
+
+ygrob <- grid::textGrob("m/z",
+                        x = grid::unit(0.5, "npc"),
+                        y = grid::unit(0.5, "npc"),
+                        just = c("centre"),
+                        rot = 90,
+                        gp = grid::gpar(fontsize = 12))
+
+# save plot 
+grDevices::pdf("./figs/vip_plot.pdf",
+                width = 10,
+                height = 5,
+                useDingbats = FALSE)
+gridExtra::grid.arrange(fvfm_plot,
+                        cvst_plot,
+                        nrow = 1,
+                        left = ygrob,
+                        bottom = xgrob)
+grDevices::dev.off()
