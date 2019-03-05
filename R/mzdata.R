@@ -36,6 +36,7 @@
 # Load libraries and data ------------------------------------------------------
 library(tidyverse)
 library(metabolomics)
+library(missForest)
 library(Harman)
 library(reshape2)
 
@@ -55,7 +56,8 @@ mz_names <- round(mzdata[, 1], 5)
 mz_names <- paste("mz", mz_names$mz, sep = "_")
 mz_names <- make.names(mz_names, unique = TRUE)
 
-mzdata <- tibble::as_tibble(t(mzdata), rownames = "sample_id")
+mzdata <- tibble::as_tibble(t(mzdata), rownames = "sample_id", 
+                            .name_repair = "universal")
 colnames(mzdata)[2:ncol(mzdata)] <- mz_names
 mzdata <- mzdata[-1, ]
   
@@ -134,12 +136,12 @@ metadata <- tibble(sample_id = mzdata$sample_id,
 mzdata <- bind_cols(metadata, mzdata[-1])
 mzdata <- type_convert(mzdata)
 
-# Impute missing values --------------------------------------------------------
+# Impute noise and remove unreliable features ----------------------------------
 round(mean(is.na(mzdata))*100, 2)
 mzdata_filt <- MissingValues(mzdata[c(-1, -3:-6)],
                              column.cutoff = 0.8,
                              group.cutoff = 0.65,
-                             complete.matrix = TRUE,
+                             complete.matrix = FALSE,
                              seed = 1978)
 mzdata <- bind_cols(metadata,
                     mzdata_filt$output[-1])
@@ -147,28 +149,24 @@ round(mean(is.na(mzdata))*100, 2)
 
 rm(mzdata_filt, mz_names)
 
+# Impute remaining missing values ----------------------------------------------
+doMC::registerDoMC()
+set.seed(1978)
+mzdata.imp <- missForest(as.data.frame(mzdata[-1:-6]),
+                         ntree = 100,
+                         verbose = TRUE,
+                         maxiter = 8,
+                         parallelize = "variables")
+
+mzdata <- bind_cols(metadata, mzdata.imp$ximp)
+round(mean(is.na(mzdata[-1:-6]))*100, 2)
+
 # remove batch effects ---------------------------------------------------------
-# mzdata2011 <- 
-#   mzdata %>% 
-#   filter(experiment == "2011")
-# 
-# PBQCs <-
-#   mzdata %>% 
-#   filter(cont_treat == "PBQC")
-
-# mzdata2013 <- 
-#   mzdata %>% 
-#   filter(experiment == "2013" & cont_treat != "PBQC")
-
-# mzdata2014 <-
-#   mzdata %>%
-#   filter(experiment == "2014")
-
 # Create across group relative log abundance plot
 box_raw <- ggplot(data = reshape2::melt(filter(mzdata[-6], class != "PBQC")),
-                   aes(x = sample_id, 
-                       y = log(value, 2) - median(log(value, 2)),
-                       fill = batch)) +
+                  aes(x = sample_id, 
+                      y = log(value, 2) - median(log(value, 2)),
+                      fill = batch)) +
   geom_boxplot(outlier.alpha = 0.4,
                outlier.size = 1) +
   scale_fill_manual(values = gordon01::qual_colours) +
@@ -193,8 +191,8 @@ colnames(harmdata) <- mzdata$sample_id
 harm <- harman(harmdata, 
                expt = mzdata$cont_treat, 
                batch = mzdata$batch,
-               limit = 0.95)
-#summary(harm)
+               limit = 0.99)
+summary(harm)
 
 # Reconstruct the data
 mzdata_cor <- tibble::as_tibble(t(reconstructData(harm)))
