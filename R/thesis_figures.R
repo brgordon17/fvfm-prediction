@@ -169,7 +169,7 @@ library(tidyverse)
 
 # Load data 
 load("./data/mzdata.rda")
-box_raw <- read_rds("./dev/box_raw_ggobj.rds")
+box_raw <- readRDS("./dev/box_raw_ggobj.rds")
 
 # RLA of corrected data
 box_cor <- ggplot(data = reshape2::melt(filter(mzdata[-6], class != "PBQC")),
@@ -192,7 +192,7 @@ box_cor <- ggplot(data = reshape2::melt(filter(mzdata[-6], class != "PBQC")),
         legend.position = "bottom")
 box_cor
 
-# Extract Legend -------------------------------------------------------------
+# Extract Legend 
 g_tab <- ggplot_gtable(ggplot_build(box_cor))
 leg <- which(sapply(g_tab$grobs, function(x) x$name) == "guide-box")
 legend <- g_tab$grobs[[leg]]
@@ -250,6 +250,7 @@ grDevices::dev.off()
 
 # PCA plot ----------------------------------
 library(tidyverse)
+library(GGally)
 
 # Load data 
 load("./data/mzdata.rda")
@@ -267,38 +268,41 @@ x_lab <- paste("PC1", " (", round(exp_var[1] * 100, 2), "%)", sep =  "")
 y_lab <- paste("PC2", " (", round(exp_var[2] * 100, 2), "%)", sep =  "")
 custom_colours <- gordon01::qual_colours
 
-# create plot
-pcacor_plot <-
-  ggplot(data = scores,
-         aes(x = PC1,
-             y = PC2,
-             color = day,
-             fill = day,
-             shape = cont_treat)) +
-  geom_point(size = 2.5,
-             stroke = 0.7,
-             position = position_jitter(width = 0.01 * diff(range(scores$PC1)),
-                                        height = 0.01 * diff(range(scores$PC2))
-             )) +
-  labs(x = x_lab, y = y_lab) +
-  scale_shape_manual(name = NULL,
-                     values = c(21, 24),
-                     label = c("control", "heated")) +
-  scale_color_manual(name = NULL,
-                     values = grDevices::adjustcolor(custom_colours,
-                                                     alpha.f = 0.9)) +
-  scale_fill_manual(name = NULL,
-                    values = grDevices::adjustcolor(custom_colours,
-                                                    alpha.f = 0.5)) +
-  theme(panel.background = element_blank(),
-        axis.ticks = element_blank(),
-        panel.grid.major = element_line(colour = "grey90"),
-        axis.text = element_text(size = 10, colour = "grey80"),
-        axis.title.y = element_text(size = 12, colour = "grey50"),
-        axis.title.x = element_text(size = 12, colour = "grey50"),
-        legend.key = element_rect(fill = "transparent", colour = NA),
-        legend.text = element_text(size = 11))
-pcacor_plot 
+# create pairs plot of first 5 PCs
+pca_pairs <- ggpairs(data = scores,
+                     aes(colour = day,
+                         fill = day,
+                         shape = cont_treat),
+                     columns = c(6:10),
+                     axisLabels = "none",
+                     showStrips = FALSE,
+                     legend = 2,
+                     upper = list(continuous = wrap("points")),
+                     lower = list(continuous = wrap("smooth", method = "lm", 
+                                                    se = FALSE)),
+                     diag = list(continuous = wrap("densityDiag"))
+                     ) +
+  theme(strip.background = element_blank())
+
+# Change colours etc (must be done by extrating each plot)
+for(i in 1:pca_pairs$nrow) {
+  for(j in 1:pca_pairs$ncol){
+    pca_pairs[i,j] <- pca_pairs[i,j] +
+      scale_shape_manual(name = NULL,
+                         values = c(21, 24),
+                         label = c("control", "heated")) +
+      scale_color_manual(name = NULL,
+                         values = grDevices::adjustcolor(custom_colours,
+                                                         alpha.f = 0.9)) +
+      scale_fill_manual(name = NULL,
+                        values = grDevices::adjustcolor(custom_colours,
+                                                        alpha.f = 0.5)) +
+      theme(legend.title = element_blank(),
+            legend.key = element_rect(fill = "transparent", colour = NA),
+            legend.text = element_text(size = 11))
+  }
+}
+pca_pairs
 
 ggsave("./figs/pca_plot.pdf",
        width = 10,
