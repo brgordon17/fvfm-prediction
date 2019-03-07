@@ -282,7 +282,8 @@ pca_pairs <- ggpairs(data = scores,
                      lower = list(continuous = wrap("points")),
                      diag = list(continuous = wrap("densityDiag"))
                      ) +
-  theme(strip.background = element_blank())
+  theme(strip.background = element_blank(),
+        strip.text = element_text(size = 11))
 
 # Change colours etc (must be done by extrating each plot)
 for(i in 1:pca_pairs$nrow) {
