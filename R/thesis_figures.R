@@ -263,9 +263,9 @@ pca <- stats::prcomp(mzdata[-1:-6],
                      center = TRUE)
 
 exp_var <- summary(pca)$importance[2 ,]
+pc_names <- paste(colnames(pca$x), " (", round(exp_var * 100, 1), "%)", sep =  "")
 scores <- data.frame(mzdata[, 1:5], pca$x)
-x_lab <- paste("PC1", " (", round(exp_var[1] * 100, 2), "%)", sep =  "")
-y_lab <- paste("PC2", " (", round(exp_var[2] * 100, 2), "%)", sep =  "")
+colnames(scores)[6:ncol(scores)] <- pc_names
 custom_colours <- gordon01::qual_colours
 
 # create pairs plot of first 5 PCs
@@ -277,9 +277,9 @@ pca_pairs <- ggpairs(data = scores,
                      axisLabels = "none",
                      showStrips = FALSE,
                      legend = 2,
-                     upper = list(continuous = wrap("points")),
-                     lower = list(continuous = wrap("smooth", method = "lm", 
+                     upper = list(continuous = wrap("smooth", method = "lm", 
                                                     se = FALSE)),
+                     lower = list(continuous = wrap("points")),
                      diag = list(continuous = wrap("densityDiag"))
                      ) +
   theme(strip.background = element_blank())
