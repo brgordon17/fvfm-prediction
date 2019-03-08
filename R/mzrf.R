@@ -97,6 +97,7 @@ ctrl <- caret::trainControl(method = "repeatedcv",
                             summaryFunction = defaultSummary,
                             seeds = seeds,
                             savePredictions = "all",
+                            classProbs = TRUE,
                             selectionFunction = "oneSE")
 
 # model
@@ -110,7 +111,7 @@ mzrf_cvst <- caret::train(x = train_data[, -1:-6],
                           allowParallel = TRUE,
                           importance = TRUE,
                           tuneGrid = tunegrid
-)
+                          )
 # email notification
 use_secret_file("~/Documents/R/R_emails/R-emails.json")
 send_message(mime(To = "benjamin.gordon@my.jcu.edu.au",
@@ -124,10 +125,8 @@ test_pred <- predict(mzrf_cvst, newdata = test_data)
 # test data prediction metrics
 confusionMatrix(test_pred, test_data$cont_treat)
 
-# Compare pred vs actual
-preds <- bind_cols(id = test_data$sample_id,
-                   pred = test_pred, 
-                   actual = test_data$cont_treat)
+# AUC-ROC for the model
+twoClassSummary(filter(mzrf_cvst$pred, mtry == 50), lev = c("C", "T"))
 
 # save as temporary file
 saveRDS(mzrf_cvst, "./dev/mzrf_model_cvst.rds")
