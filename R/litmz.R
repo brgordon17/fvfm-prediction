@@ -1,46 +1,19 @@
-#' create litmz.
-#'
-#' \code{create_litmz()} cleans \code{./data-raw/metabs_literature.csv} for
-#' future analysis
-#'
-#' \code{create_litmz()} loads \code{metabs_literature.csv}, cleans up the
-#' headers and creates \code{litmz.rda}.
-#'
-#' @param save.rda Logical indicating if a .rda file should be saved to
-#' \code{/data}.
-#' @param overwrite Logical indicating if existing files should be overwritten.
-#'
-#' @return Returns a dataframe of class \code{tbl_df}
-#'
-#' @note \code{create_litmz()} was not intended to be used outside of this
-#' package.
-#'
-#' @author Benjamin R. Gordon
-#'
-#' @export
-#'
+# Code to create litmz.rda
+# Author: Benjamin R. Gordon
+#Date: 2019-03-11
+
 # Load literature variables and clean up ---------------------------------------
-create_litmz <- function(save.rda = FALSE,
-                         overwrite = FALSE) {
-
-  litmz <- readr::read_csv("./data-raw/metabs_literature.csv", col_names = TRUE)
-  litmz <- litmz %>%
-    rename(reported_mz = `Reported m/z`,
-           reported_ion = `Reported ion`,
-           monoiso_mass = `Monoisotopic Mass (Da)`,
-           molec_formula = `Molecular Formula`,
-           reported_name = `Reported compound name`,
-           taxon = `Genus`,
-           endnote_ref = `Endnote Reference`,
-           ref = `ref`)
-
-  if(save.rda) {
-    devtools::use_data(litmz, overwrite = overwrite)
-  }
-
-  litmz
-
-}
+litmz <- readr::read_csv("./data-raw/metabs_literature.csv", col_names = TRUE)
+litmz <- rename(litmz,
+                reported_mz = `Reported m/z`,
+                reported_ion = `Reported ion`,
+                monoiso_mass = `Monoisotopic Mass (Da)`,
+                molec_formula = `Molecular Formula`,
+                reported_name = `Reported compound name`,
+                taxon = `Genus`,
+                endnote_ref = `Endnote Reference`,
+                ref = `ref`)
+save(litmz, file = "./data/litmz.rda", compress = "bzip2")
 
 ## Document data ---------------------------------------------------------------
 
