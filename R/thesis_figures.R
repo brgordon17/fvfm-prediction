@@ -363,12 +363,12 @@ mzrf_fvfm <- readRDS("./dev/mzrf_model_fvfm.rds")
 mzrf_cvst <- readRDS("./dev/mzrf_model_cvst.rds")
 
 # Identify important variables 
-fvfm_impvars <- varImp(mzrf_fvfm, scale = TRUE)
+fvfm_impvars <- varImp(mzrf_fvfm, type = 1, scale = FALSE)
 fvfm_impvars <- fvfm_impvars$importance
 fvfm_impvars <- cbind(vip = apply(fvfm_impvars, 1, max), fvfm_impvars)
 fvfm_impvars <- fvfm_impvars[order(-fvfm_impvars$vip), ,drop = FALSE]
 
-cvst_impvars <- varImp(mzrf_cvst, scale = TRUE)
+cvst_impvars <- varImp(mzrf_cvst, type = 1, scale = FALSE)
 cvst_impvars <- cvst_impvars$importance
 cvst_impvars <- cbind(vip = apply(cvst_impvars, 1, max), cvst_impvars)
 cvst_impvars <- cvst_impvars[order(-cvst_impvars$vip), ,drop = FALSE]
@@ -438,7 +438,7 @@ cvst_plot <-
                          y = grid::unit(0.5, "npc"),
                          gp = grid::gpar(fontsize = 12)))
 
-xgrob <- grid::textGrob("Variable Importance",
+xgrob <- grid::textGrob("Mean Decrease in Accuracy",
                         x = grid::unit(0.5, "npc"),
                         y = grid::unit(0.5, "npc"),
                         just = c("centre"),
