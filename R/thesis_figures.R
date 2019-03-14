@@ -462,3 +462,55 @@ gridExtra::grid.arrange(fvfm_plot,
                         left = ygrob,
                         bottom = xgrob)
 grDevices::dev.off()
+
+# variable behaviour plot ------------------------------------------------------
+library(tidyverse)
+library(caret)
+
+# Load and prep data
+load("./data/mzdata.rda")
+mzrf_fvfm <- read_rds("./dev/mzrf_model_fvfm.rds")
+mzrf_cvst <- read_rds("./dev/mzrf_model_cvst.rds")
+
+fvfm_impvars <- varImp(mzrf_fvfm, type = 1, scale = FALSE)
+fvfm_impvars <- as.tibble(fvfm_impvars$importance, rownames = "mz")
+
+cvst_impvars <- varImp(mzrf_cvst, type = 1, scale = FALSE)
+cvst_impvars <- as.tibble(cvst_impvars$importance, rownames = "mz")
+
+fvfm_impvars <- top_n(fvfm_impvars, 9)
+cvst_impvars <- top_n(cvst_impvars, 9)
+
+fvfm_vars <- select(mzdata, fvfm_impvars$mz)
+cvst_vars <- select(mzdata, cvst_impvars$mz)
+
+fvfm_vars <- bind_cols(mzdata[1:6], fvfm_vars)
+fvfm_vars <- filter(fvfm_vars, class != "PBQC" & cont_treat != "C")
+fvfm_vars$FvFm <- factor(fvfm_vars$FvFm)
+fvfm_vars <- as_tibble(reshape2::melt(fvfm_vars))
+
+
+cvst_vars <- bind_cols(mzdata[1:6], cvst_vars)
+cvst_vars <- filter(cvst_vars, class != "PBQC" & cont_treat != "C")
+cvst_vars$FvFm <- factor(cvst_vars$FvFm)
+cvst_vars <- as_tibble(reshape2::melt(cvst_vars))
+
+# Plots
+fvfm_plot <- ggplot(fvfm_vars, aes(x = day, y = value)) +
+  geom_boxplot() +
+  facet_wrap(~variable, scales = "free") +
+  labs(x = Quantum~Yield~PSII~(F[v]/F[m]), 
+       y = "Intensity")
+
+cvst_plot <- ggplot(cvst_vars, aes(x = day, y = value)) +
+  geom_boxplot() +
+  facet_wrap(~variable, scales = "free") +
+  labs(x = "Day", 
+       y = "Intensity")
+
+
+
+
+
+
+
