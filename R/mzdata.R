@@ -41,6 +41,7 @@ library(Harman)
 library(reshape2)
 
 mzdata  <-  readr::read_csv("./data-raw/mzdata-raw.csv", na = "0")
+load("./data/pamdata.rda")
 
 # remove isotopes --------------------------------------------------------------
 mzdata <- mzdata[-grep("[M+1]", mzdata$isotopes, fixed = TRUE),]
@@ -61,7 +62,15 @@ mzdata <- tibble::as_tibble(t(mzdata), rownames = "sample_id",
 colnames(mzdata)[2:ncol(mzdata)] <- mz_names
 mzdata <- mzdata[-1, ]
   
-# Create metadata -------------------------------------------------------------
+# Create metadata --------------------------------------------------------------
+yield <- 
+  pamdata %>% 
+  group_by(day) %>%
+  filter(collect == TRUE) %>%
+  arrange(class, .by_group = TRUE)
+yield <- yield[-46:-48, ]
+#yield <- c(rep(NA, 18), c(yield$yield))
+
 metadata <- tibble(sample_id = mzdata$sample_id,
                    class = factor(c(rep("PBQC", 18),
                                     rep("T0-C", 12),
@@ -118,23 +127,12 @@ metadata <- tibble(sample_id = mzdata$sample_id,
                                          rep("T", 12)), 
                                        levels = c("C", "T", "PBQC")
                                        ),
-                   FvFm = c(rep(NA, 18),
-                            rep(0.652, 12),
-                            rep(0.646, 12),
-                            rep(0.657, 12),
-                            rep(0.641, 9),
-                            rep(0.655, 12),
-                            rep(0.575, 12),
-                            rep(0.678, 12),
-                            rep(0.573, 12),
-                            rep(0.643, 12),
-                            rep(0.304, 12),
-                            rep(0.659, 12),
-                            rep(0.000, 12)
-                            ))
+                   FvFm = c(rep(NA, 18), c(yield$yield))
+                   )
 
 mzdata <- bind_cols(metadata, mzdata[-1])
 mzdata <- type_convert(mzdata)
+rm(yield)
 
 # Impute noise and remove unreliable features ----------------------------------
 round(mean(is.na(mzdata))*100, 2)
