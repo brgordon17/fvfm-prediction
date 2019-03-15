@@ -63,13 +63,14 @@ colnames(mzdata)[2:ncol(mzdata)] <- mz_names
 mzdata <- mzdata[-1, ]
   
 # Create metadata --------------------------------------------------------------
-yield <- 
+newpam <- 
   pamdata %>% 
-  group_by(day) %>%
+  group_by(class, day) %>%
   filter(collect == TRUE) %>%
-  arrange(class, .by_group = TRUE)
-yield <- yield[-46:-48, ]
-#yield <- c(rep(NA, 18), c(yield$yield))
+  mutate(mean_yield = mean(yield)) %>%
+  arrange(day, class) %>%
+  ungroup() %>%
+  slice(-46:-48)
 
 metadata <- tibble(sample_id = mzdata$sample_id,
                    class = factor(c(rep("PBQC", 18),
@@ -127,12 +128,12 @@ metadata <- tibble(sample_id = mzdata$sample_id,
                                          rep("T", 12)), 
                                        levels = c("C", "T", "PBQC")
                                        ),
-                   FvFm = c(rep(NA, 18), c(yield$yield))
+                   FvFm = c(rep(NA, 18), c(newpam$mean_yield))
                    )
 
 mzdata <- bind_cols(metadata, mzdata[-1])
 mzdata <- type_convert(mzdata)
-rm(yield)
+rm(newpam)
 
 # Impute noise and remove unreliable features ----------------------------------
 round(mean(is.na(mzdata))*100, 2)
