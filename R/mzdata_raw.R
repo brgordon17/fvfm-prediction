@@ -52,12 +52,12 @@ boxplot(tics, ylab = "intensity", main = "TIC")
 
 # define the parameters 
 cwp <- CentWaveParam(ppm = 30, 
-                     peakwidth = c(20, 60),
+                     peakwidth = c(10, 60),
                      snthresh = 10,
                      prefilter = c(3, 1100),
                      mzCenterFun = "wMean",
-                     integrate = 2,
-                     mzdiff = 0.01,
+                     integrate = 1,
+                     mzdiff = -0.001,
                      fitgauss = FALSE)
 
 # Do peak detection and save
@@ -77,7 +77,7 @@ pdp <- PeakDensityParam(mzdata$class,
                         bw = 5,
                         minFraction = 0.5,
                         minSamples = 1,
-                        binSize = 0.05, #same as mzwid
+                        binSize = 0.025, #same as mzwid
                         maxFeatures = 50)
 mzdata <- groupChromPeaks(mzdata, param = pdp)
 
