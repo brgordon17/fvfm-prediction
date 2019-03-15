@@ -13,7 +13,7 @@ mzdata <- data.frame(droplevels(mzdata))
 # Partition data into training, test and validation sets
 set.seed(1978)
 train_index <- createDataPartition(mzdata$FvFm,
-                                   p = 0.8,
+                                   p = 0.9,
                                    list = FALSE)
 train_data <- mzdata[train_index, ]
 test_data  <- mzdata[-train_index, ]
