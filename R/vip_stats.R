@@ -2,20 +2,29 @@
 # Author: Benjamin R Gordon.
 
 library(tidyverse)
-library(caret)
 
-# Load data
+# Load and prep data
 load("./data/mzdata.rda")
-fvfm_model <- readRDS("./dev/mzrf_model_fvfm.rds")
-cvst_model <- readRDS("./dev/mzrf_model_cvst.rds")
 
-# tidy data
-fvfm_impvars <- varImp(fvfm_model, scale = TRUE)
-fvfm_impvars <- fvfm_impvars$importance
-fvfm_impvars <- fvfm_impvars[order(-fvfm_impvars$Overall), ,drop = FALSE]
-fvfm_impvars <- bind_cols(mz = rownames(fvfm_impvars), fvfm_impvars)
+features <- 
+  mzdata %>%
+  filter(cont_treat != "PBQC") %>%
+  droplevels() %>%
+  select(class,
+         day,
+         cont_treat,
+         FvFm,
+         mz_249.18855,
+         mz_285.27831)
 
-# top five vips
-top5 <- fvfm_impvars[1:5, ][1]
-top5.1 <- select(class, )
+# test for normality (normal if p > 0.05)
+shapiro_data <- apply(features[, 5:6], 2, shapiro.test)
+shapiro_data <- unlist(lapply(shapiro_data, function(x) x$p.value))
+shapiro_data
 
+# all of the variables are non-normal so perform a Kruskal-Wallis test
+# for 249
+kruskal.test(features$mz_249.18855, features$day)
+
+# for 285
+kruskal.test(features$mz_285.27831, features$day)
