@@ -288,13 +288,13 @@ gridExtra::grid.arrange(gridExtra::arrangeGrob(plot_a,
                         heights = c(12, 1))
 grDevices::dev.off()
 
-# PCA plot ----------------------------------
+# PCA plot ---------------------------------------------------------------------
 library(tidyverse)
 library(GGally)
 
 # Load data 
 load("./data/mzdata.rda")
-mzdata <- filter(mzdata, class != "PBQC")
+mzdata <- filter(mzdata, class != "PBQC" & cont_treat != "C")
 
 # PCA of batch corrected data (PBQCs excluded)
 set.seed(1978)
@@ -312,14 +312,15 @@ custom_colours <- gordon01::qual_colours
 pca_pairs <- ggpairs(data = scores,
                      aes(colour = day,
                          fill = day,
-                         shape = cont_treat),
+                         shape = day),
                      columns = c(6:10),
                      axisLabels = "none",
                      showStrips = FALSE,
-                     legend = 2,
-                     upper = list(continuous = wrap("smooth", method = "lm", 
-                                                    se = FALSE)),
-                     lower = list(continuous = wrap("points")),
+                     legend = c(2,1),
+                     upper = list(continuous = wrap("smooth", method = "lm",
+                                                    se = FALSE,
+                                                    size = 1.5)),
+                     lower = list(continuous = wrap("points", size = 1.5)),
                      diag = list(continuous = wrap("densityDiag"))
                      ) +
   theme(strip.background = element_blank(),
@@ -330,8 +331,7 @@ for(i in 1:pca_pairs$nrow) {
   for(j in 1:pca_pairs$ncol){
     pca_pairs[i,j] <- pca_pairs[i,j] +
       scale_shape_manual(name = NULL,
-                         values = c(21, 24),
-                         label = c("control", "heated")) +
+                         values = c(4, 21:25)) +
       scale_color_manual(name = NULL,
                          values = grDevices::adjustcolor(custom_colours,
                                                          alpha.f = 0.9)) +
