@@ -1,3 +1,6 @@
-mz,importance,reported_mz,reported_ion,monoiso_mass,molec_formula,reported_name,taxon,endnote_ref
-249.18855,5.318741161830955,271,[M+Na]+,248.17763,C16H24O2,Dihomomontiporyne H,Montipora,{Alam; 2002 #6322}
-285.27831,3.8136165366954127,283,[M+H]+,284.271515,C18H36O2,Stearic Acid,Aiptasia/Symbiodinium,{Dunn; 2012 #6194}
+mz,adduct,reported_mz,reported_ion,monoiso_mass,molec_formula,reported_name,taxon,endnote_ref
+249.18855,NA,271,[M+Na]+,248.17763,C16H24O2,Dihomomontiporyne H,Montipora,{Alam; 2002 #6322}
+285.27831,NA,283,[M+H]+,284.271515,C18H36O2,Stearic Acid,Aiptasia/Symbiodinium,{Dunn; 2012 #6194}
+170.04777,[M+K]+,NA,NA,131.094635,C6H13NO2,Beta-alanine betaine,Scleractinia,{Hill; 2010 #6294}
+170.04777,[M+K]+,NA,NA,131.095,C6H13NO2,Alanine betaine,Scleractinia,{Hill; 2010 #6294}
+985.69447,[2M+Na]+,482.36,[M+H]+,481.35321,C24H52NO6P,Lyso-PAF C-16,Scleractinia,{Quinn; 2016 #6269}
