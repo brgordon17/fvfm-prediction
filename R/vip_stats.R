@@ -15,10 +15,12 @@ features <-
          cont_treat,
          FvFm,
          mz_249.18855,
-         mz_285.27831)
+         mz_285.27831,
+         mz_170.04777,
+         mz_985.69447)
 
 # test for normality (normal if p > 0.05)
-shapiro_data <- apply(features[, 5:6], 2, shapiro.test)
+shapiro_data <- apply(features[, 5:ncol(features)], 2, shapiro.test)
 shapiro_data <- unlist(lapply(shapiro_data, function(x) x$p.value))
 shapiro_data
 
@@ -28,3 +30,9 @@ kruskal.test(features$mz_249.18855, features$day)
 
 # for 285
 kruskal.test(features$mz_285.27831, features$day)
+
+# for 170
+kruskal.test(features$mz_170.04777, features$day)
+
+# for 985
+kruskal.test(features$mz_985.69447, features$day)
