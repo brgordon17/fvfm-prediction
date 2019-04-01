@@ -12,7 +12,7 @@ mzdata <- filter(mzdata, cont_treat != "PBQC")
 mzdata <- data.frame(droplevels(mzdata))
 
 # Partition data into training, test and validation sets
-set.seed(1978)
+set.seed(16)
 train_index <- createDataPartition(mzdata$FvFm,
                                    p = 0.9,
                                    list = FALSE)
