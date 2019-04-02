@@ -15,7 +15,6 @@ features <-
          cont_treat,
          FvFm,
          mz_249.18855,
-         mz_285.27831,
          mz_170.04777,
          mz_985.69447)
 
@@ -27,9 +26,6 @@ shapiro_data
 # all of the variables are non-normal so perform a Kruskal-Wallis test
 # for 249
 kruskal.test(features$mz_249.18855, features$day)
-
-# for 285
-kruskal.test(features$mz_285.27831, features$day)
 
 # for 170
 kruskal.test(features$mz_170.04777, features$day)
