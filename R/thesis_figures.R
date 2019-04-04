@@ -530,6 +530,12 @@ sum_mzdata <-
             )
 sum_mzdata$variable <- str_replace_all(sum_mzdata$variable, "mz_", "")
 
+names <- c(
+  "249.18855" = "dihomomontiporyne H",
+  "170.04777" = "alanine betaine",
+  "985.69447" = "lyso-PAF C16"
+  )
+
 # create plot
 ggplot(sum_mzdata, aes(x = day,
                        y = mean,
@@ -541,7 +547,7 @@ ggplot(sum_mzdata, aes(x = day,
                 show.legend = FALSE) +
   geom_path(size = 0.8, show.legend = FALSE) +
   geom_point(size = 3) +
-  facet_wrap(vars(variable)) +
+  facet_wrap(vars(variable), labeller = as_labeller(names)) +
   scale_x_discrete(name = "Time (days)", 
                    labels = c(1, 5, 8, 10, 12, 15)) +
   scale_y_continuous(name = Mean~Intensity~x~10^4) +
