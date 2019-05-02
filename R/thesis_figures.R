@@ -545,6 +545,7 @@ ggplot(sum_mzdata, aes(x = day,
                 show.legend = FALSE) +
   geom_path(size = 0.8, show.legend = FALSE) +
   geom_point(size = 3) +
+  geom_hline(yintercept = 0.1, linetype = 3) +
   facet_wrap(vars(variable), labeller = as_labeller(names)) +
   scale_x_discrete(name = "Time (days)", 
                    labels = c(1, 5, 8, 10, 12, 15)) +
@@ -556,15 +557,12 @@ ggplot(sum_mzdata, aes(x = day,
                      name = NULL,
                      labels = c("control", "heated")) +
   theme(axis.text = element_text(size = 10, colour = "grey65"),
-        axis.title = element_text(size = 12),
+        axis.title = element_text(size = 16),
         axis.ticks = element_blank(),
         legend.key = element_blank(),
-        legend.text = element_text(size = 12),
-        strip.text = element_text(size = 12),
+        legend.text = element_text(size = 14),
+        strip.text = element_text(size = 14),
         strip.background = element_blank()
         )
 
-ggsave("./figs/feature_intensities.pdf",
-       width = 10,
-       height = 6.5,
-       units = "in")
+ggsave("./figs/feature_intensities.pdf")
