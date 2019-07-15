@@ -120,7 +120,7 @@ dens <- ggplot(filter(densitydata, day != "1" & day != "5"),
                      labels = c(8, 10, 12, 15)) +
   scale_y_continuous(name = expression(Cell~Density~(10^6~cells~cm^-2)),
                      limits = c(0, 2)) +
-  scale_colour_manual(values = gordon01::qual_colours, 
+  scale_colour_manual(values = gordon01::qual_colours[c(2, 6)], 
                       name = NULL,
                       labels = c("control", "heated")) +
   scale_shape_manual(values = c(16, 17),
@@ -131,10 +131,10 @@ dens <- ggplot(filter(densitydata, day != "1" & day != "5"),
         panel.grid.major.y = element_line(colour = "grey90",
                                           size = 0.6),
         axis.text = element_text(size = 10, colour = "grey65"),
-        axis.title = element_text(size = 12, colour = "grey65"),
+        axis.title = element_text(size = 14),
         axis.ticks = element_blank(),
         legend.key = element_blank(),
-        legend.text = element_text(size = 12),
+        legend.text = element_text(size = 14),
         legend.position = "bottom")
 
 # create chl a plot
@@ -150,7 +150,7 @@ chl <- ggplot(filter(chlorodata, day != "1" & day != "5"),
                      labels = c(1, 5, 8, 10, 12, 15)) +
   scale_y_continuous(name = expression(Chl~a~(pg~cell^-1)),
                      limits = c(0, 1)) +
-  scale_colour_manual(values = gordon01::qual_colours, 
+  scale_colour_manual(values = gordon01::qual_colours[c(2, 6)], 
                       name = NULL,
                       labels = c("control", "heated")) +
   scale_shape_manual(values = c(16, 17),
@@ -161,10 +161,8 @@ chl <- ggplot(filter(chlorodata, day != "1" & day != "5"),
         panel.grid.major.y = element_line(colour = "grey90",
                                           size = 0.6),
         axis.text = element_text(size = 10, colour = "grey65"),
-        axis.title = element_text(size = 12, colour = "grey65"),
-        axis.ticks = element_blank(),
-        legend.key = element_blank(),
-        legend.text = element_text(size = 12)
+        axis.title = element_text(size = 14),
+        axis.ticks = element_blank()
   )
 
 # Extract legend, create grobs and set titles
