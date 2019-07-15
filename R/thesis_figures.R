@@ -68,7 +68,7 @@ ggplot(sum_pamdata, aes(x = day,
   scale_x_discrete(name = "Time (days)",
                    labels = c(1:15)) +
   scale_y_continuous(name = expression(Quantum~Yield~PSII~(F[v]/F[m]))) +
-  scale_colour_manual(values = gordon01::qual_colours[c(2,1)], 
+  scale_colour_manual(values = gordon01::qual_colours[c(2,6)], 
                       name = NULL,
                       labels = c("control", "heated")) +
   scale_shape_manual(values = c(16, 17),
@@ -79,10 +79,10 @@ ggplot(sum_pamdata, aes(x = day,
         panel.grid.major.y = element_line(colour = "grey90",
                                           size = 0.6),
         axis.text = element_text(size = 10, colour = "grey65"),
-        axis.title = element_text(size = 12, colour = "grey65"),
+        axis.title = element_text(size = 14),
         axis.ticks = element_blank(),
         legend.key = element_blank(),
-        legend.text = element_text(size = 12)
+        legend.text = element_text(size = 14)
         )
 ggsave("./figs/fvfm_plot.pdf",
        width = 10,
