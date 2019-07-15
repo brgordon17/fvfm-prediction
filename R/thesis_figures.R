@@ -83,7 +83,18 @@ ggplot(sum_pamdata, aes(x = day,
         axis.ticks = element_blank(),
         legend.key = element_blank(),
         legend.text = element_text(size = 14)
-        )
+        ) +
+  annotate("text", x = "day 2", y = 0.605, label = "*") +
+  annotate("text", x = "day 7", y = 0.605, label = "**") +
+  annotate("text", x = "day 8", y = 0.54, label = "***") +
+  annotate("text", x = "day 9", y = 0.598, label = "***") +
+  annotate("text", x = "day 10", y = 0.376, label = "***") +
+  annotate("text", x = "day 11", y = 0.352, label = "***") +
+  annotate("text", x = "day 12", y = 0.195, label = "***") +
+  annotate("text", x = "day 13", y = 0.127, label = "***") +
+  annotate("text", x = "day 14", y = 0.03, label = "***") +
+  annotate("text", x = "day 15", y = 0.024, label = "***")
+
 ggsave("./figs/fvfm_plot.pdf",
        width = 10,
        height = 6.5,
