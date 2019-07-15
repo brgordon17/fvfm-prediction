@@ -9,7 +9,7 @@ library(tidyverse)
 # load data
 load("./data/tempdata.rda")
 
-plot_time <- c(as.POSIXct("2013-05-06", format = "%F"), 
+plot_time <- c(as.POSIXct("2013-05-08", format = "%F"), 
                as.POSIXct("2013-05-22", format = "%F"))
 
 # Plot
@@ -21,7 +21,7 @@ ggplot(data = tempdata, aes(x = time)) +
   scale_color_manual(values = c("Control" = gordon01::qual_colours[2],
                                 "Heated" = gordon01::qual_colours[6],
                                 "Reef@0.3m" = "grey80")) +
-  scale_x_datetime(date_labels = as.character(c(-1:16)), date_breaks = "1 days", 
+  scale_x_datetime(date_labels = as.character(c(0:15)), date_breaks = "1 days", 
                    limits = plot_time) +
   theme(panel.background = element_blank(),
         axis.ticks = element_blank(),
