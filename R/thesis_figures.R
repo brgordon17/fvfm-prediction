@@ -364,6 +364,8 @@ ggsave("./figs/pca_plot.pdf",
 #              type = "norm")
 
 # Important variables plot -----------------------------------------------------
+library(tidyverse)
+library(caret)
 
 # Load models 
 mzrf_fvfm <- readRDS("./dev/mzrf_model_fvfm.rds")
@@ -393,7 +395,7 @@ fvfm_plot <- ggplot(fvfm_impvars,
         axis.ticks.x = element_blank(),
         axis.text.x = element_text(size = 12),
         axis.text.y = element_text(size = 12),
-        axis.title = element_text(size = 12),
+        axis.title = element_text(size = 14),
         panel.background = element_blank(),
         panel.grid.major.x = element_blank(),
         panel.grid.minor.x = element_blank(),
