@@ -510,7 +510,7 @@ ggplot(cv_preds, aes(x = obs, y = pred)) +
         axis.ticks.x = element_blank(),
         axis.text.x = element_text(size = 10),
         axis.text.y = element_text(size = 10),
-        axis.title = element_text(size = 12)
+        axis.title = element_text(size = 14)
         )
 
 ggsave("./figs/prediction_boxplot.pdf",
