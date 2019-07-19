@@ -229,12 +229,11 @@ box_cor <- ggplot(data = reshape2::melt(filter(mzdata[-6], class != "PBQC")),
   scale_x_discrete(name = NULL) +
   scale_y_continuous(name = "Relative log Abundance") +
   theme(panel.background = element_blank(),
-        axis.text.y = element_text(size = 10, colour = "grey65"),
+        axis.text.y = element_text(size = 11, colour = "grey65"),
         axis.text.x = element_blank(),
         axis.title.y = element_blank(),
-        axis.title.x = element_text(size = 12, colour = "grey65"),
         axis.ticks = element_blank(),
-        legend.text = element_text(size = 10),
+        legend.text = element_text(size = 14),
         legend.title = element_blank(),
         legend.position = "bottom")
 box_cor
@@ -248,7 +247,8 @@ rm(g_tab, leg)
 # create grobs
 plot_a <-
   gridExtra::arrangeGrob(box_raw +
-                           theme(legend.position = "none"),
+                           theme(legend.position = "none",
+                                 axis.title.y = element_blank()),
                          top = grid::textGrob("a", 
                                               x = grid::unit(0.017, "npc"),
                                               y = grid::unit(0.5, "npc"),
@@ -270,14 +270,24 @@ xgrob <- gridExtra::arrangeGrob(grid::textGrob("Sample",
                                                x = grid::unit(0.6, "npc"),
                                                y = grid::unit(0.5, "npc"),
                                                just = c("centre"),
-                                               gp = grid::gpar(fontsize = 12,
-                                                               col = "grey65")),
+                                               gp = grid::gpar(fontsize = 14)),
                                 right = legend)
+                                
+
+ygrob <- grid::textGrob("Relative log Abundance",
+                        x = grid::unit(0.5, "npc"),
+                        y = grid::unit(0.5, "npc"),
+                        just = c("centre"),
+                        rot = 90,
+                        gp = grid::gpar(fontsize = 14)
+                        )
+
 
 # print plot
 gridExtra::grid.arrange(gridExtra::arrangeGrob(plot_a,
                                                plot_b,
-                                               nrow = 1),
+                                               nrow = 2,
+                                               left = ygrob),
                         xgrob,
                         nrow = 2,
                         heights = c(12, 1))
@@ -285,11 +295,12 @@ gridExtra::grid.arrange(gridExtra::arrangeGrob(plot_a,
 # Save plot
 grDevices::pdf("./figs/RLA_plot.pdf",
                width = 10,
-               height = 3.5,
+               height = 6.5,
                useDingbats = FALSE)
 gridExtra::grid.arrange(gridExtra::arrangeGrob(plot_a,
                                                plot_b,
-                                               nrow = 1),
+                                               nrow = 2,
+                                               left = ygrob),
                         xgrob,
                         nrow = 2,
                         heights = c(12, 1))
