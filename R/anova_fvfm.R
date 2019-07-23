@@ -10,7 +10,7 @@ load("./data/pamdata.rda")
 summary(pamdata$yield[pamdata$class == "control"])
 summary(pamdata$yield[pamdata$class == "treatment"])
 
-# Rm ANOVA
+# RMANOVA ----------------------------------------------------------------------
 pam_aov <- aov(yield ~ class * day, data = pamdata)
 summary(pam_aov)
 # report as (RMANOVA, F -df_resid, -df_class:day = Fval, p<0.001)
@@ -19,6 +19,7 @@ summary(pam_aov)
 res <- pam_aov$residuals
 hist(res, main = "Histogram of residuals", xlab = "Residuals")
 
+# Tukey's HSD ------------------------------------------------------------------
 # check for equality of variance
 # Use lower p threshold if equality of variance isnt true (p < 0.05)
 leveneTest(yield ~ class, data = pamdata)
