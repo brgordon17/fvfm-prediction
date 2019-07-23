@@ -1,4 +1,4 @@
-# Script to conduct stats anlaysis of VIP features.
+# Script to conduct stats anlaysis of annotated features.
 # Author: Benjamin R Gordon.
 
 library(tidyverse)
