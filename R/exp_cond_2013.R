@@ -8,7 +8,7 @@ library(tibble)
 
 # Create variables
 
-exp_cond_2013 <- 
+exp_cond <- 
   tibble(date = seq(as.Date("2013-05-08"), by = 1, len = 15),
          day = c(1:15),
          do_collect = as.logical(c(1, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1)),
