@@ -21,4 +21,4 @@ Repository for the R code and data used in my PhD thesis.
 ### License
 Creative Commons Attribution 4.0 International Public License
 
-For more information, please see the [LICENSE](LICENSE.md) file.
+For more information, please see the [LICENSE](LICENSE) file.
