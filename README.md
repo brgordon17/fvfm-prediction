@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# Coral Metabolomics: Predicting the Photosynthetic Efficiency of Thermally Stressed Corals (In Development)
+# Coral Metabolomics: Predicting the Photosynthetic Efficiency of Thermally Stressed Corals
 
 <!-- badges: start -->
 
@@ -10,15 +10,17 @@ BY 4.0](https://img.shields.io/badge/License-CC%20BY%204.0-lightgrey.svg)](https
 <!-- badges: end -->
 
 This repository contains the R code used in this experiment. The
-following folders conain:
+following folders contain:
 
-*[R/](R/): All scripts to fully reproduce the data, analysis, figures
-and tables in this chapter *[figs/](figs/): Figures used in this chapter
-*[tables/](tables/): Tables used in this chapter *[data/](data/):
-Preprocessed and/or cleaned datasets used in the this chapter
+  - [R/](R/): All scripts to fully reproduce the data, analysis, figures
+    and tables in this chapter
+  - [figs/](figs/): Figures used in this chapter
+  - [tables/](tables/): Tables used in this chapter
+  - [data/](data/): Preprocessed and/or cleaned datasets used in this
+    chapter
 
-Due to size constraints, some raw data is not included in this repositry
-and as such, the following scripts are deprecated:
+Due to size constraints, some raw data is not included in this
+repository and as such, the following scripts are deprecated:
 
   - [mzdata\_raw.R](R/mzdata_raw.R)
   - [mzdata.R](R/mzdata.R)
@@ -29,13 +31,12 @@ The data produced by the above scripts is located in the [data
 folder](data/); however, please [send me an email](brgordon17@gmail.com)
 if you wish to have access to the raw data.
 
-#### Contact
+### Contact
 
-I can be contacted via [email](brgordon17@gmail.com) at
-<brgordon17@gmail.com>
+I can be contacted via email at <brgordon17@gmail.com>
 
-#### License
+### License
 
-Creative Commons Attribution 4.0 International Public License
+Creative Commons Attribution 4.0 International Public License.
 
 For more information, please see the [LICENSE](LICENSE) file.
