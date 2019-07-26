@@ -1,41 +1,10 @@
-#' Create mzdata.
-#'
-#' \code{create_mzdata()} pre-processes the LCMS data used for modelling in
-#' gordon-C5.
-#'
-#' Initially, the function takes the raw output from xcms and removes unwanted
-#' data (e.g. retention times, isotopes, peak counts etc.). Then, it creates
-#' new categorical variables based on the sample information. Finally, it
-#' replaces true non-detects with noise, removes poorly resolved mass features
-#' and then replaces the small number of remaining missing values using random
-#' forest imputaion. The list below details the logic behind the missing values
-#' imputation:
-#' \itemize{
-#' \item \strong{TRUE NON-DETECTS:}
-#'  Replace values missing in one class, but not others, with a random number
-#'  between zero and the minimum of the matrix (i.e. noise). To be considered a
-#'  true non-detect, a class should be missing at least 60 precent of its
-#'  values. Achieved with,
-#'  \code{metabolomics::MissingValues(group.cutoff = 0.6)}
-#'  \item \strong{POORLY RESOLVED MASS FEATURES:}
-#'  Remove mass features with more than 90 percent missing values. Achieved
-#'  with, \code{metabolomics::MissingValues(column.cutoff = 0.9)}
-#'  \item \strong{FALSE NON DETECTS:}
-#'  Remaining missing values will be computed using
-#'  \code{missForest::missForest()}. Achieved with,
-#'  \code{metabolomics::MissingValues(complete.matrix = FALSE)}
-#' }
-#'
-#' @author Benjamin R. Gordon
-#'
-#' @seealso
-#' \code{\link[metabolomics]{MissingValues}}
-#' \code{\link[doMC]{registerDoMC}}
-#' \code{\link[missForest]{missForest}}
-#' 
+# Code to preprocess mzdata_raw and construct mzdata
+# Author: Benjamin R. Gordon
+# Date: 2019-03-17
+
 # Load libraries and data ------------------------------------------------------
 library(tidyverse)
-library(metabolomics)
+library(phdhelpr)
 library(missForest)
 library(Harman)
 library(reshape2)
@@ -137,11 +106,11 @@ rm(newpam)
 
 # Impute noise and remove unreliable features ----------------------------------
 round(mean(is.na(mzdata))*100, 2)
-mzdata_filt <- MissingValues(mzdata[c(-1, -3:-6)],
-                             column.cutoff = 0.8,
-                             group.cutoff = 0.65,
-                             complete.matrix = FALSE,
-                             seed = 1978)
+mzdata_filt <- phdhelpr::missing_values(mzdata[c(-1, -3:-6)],
+                                        column.cutoff = 0.8,
+                                        group.cutoff = 0.65,
+                                        complete.matrix = FALSE,
+                                        seed = 1978)
 mzdata <- bind_cols(metadata,
                     mzdata_filt$output[-1])
 round(mean(is.na(mzdata))*100, 2)
