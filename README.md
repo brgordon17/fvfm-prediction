@@ -11,7 +11,9 @@ BY 4.0](https://img.shields.io/badge/License-CC%20BY%204.0-lightgrey.svg)](https
 
 <!-- image: start -->
 
-placeholder <!-- image: end -->
+![alt
+text](https://github.com/brgordon17/fvfm-prediction/blob/master/figs/prediction_boxplot.png)
+<!-- image: end -->
 
 This repository contains the R code used in this experiment. The
 following folders contain:

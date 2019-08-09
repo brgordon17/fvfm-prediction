@@ -17,7 +17,7 @@ knitr::opts_chunk$set(
 <!-- badges: end -->
 
 <!-- image: start -->
-placeholder
+![alt text](https://github.com/brgordon17/fvfm-prediction/blob/master/figs/prediction_boxplot.png)
 <!-- image: end -->
 
 This repository contains the R code used in this experiment. The following folders contain: 
