@@ -25,15 +25,16 @@ fvfm_impvars <- as_tibble(fvfm_impvars[1:20, ], rownames = NULL)
 fvfm_plot <- ggplot(fvfm_impvars,
                     aes(x = vip, y = mz)) +
   geom_point(shape = 16,
-             colour = gordon01::seq_colours[4],
+             colour = phdhelpr::warm_colours[4],
              size = 3) +
   scale_x_continuous(name = "Mean Decrease in Accuracy") +
-  scale_y_discrete(name = "mz") +
+  scale_y_discrete(name = "m/z") +
   theme(axis.ticks.y = element_blank(),
         axis.ticks.x = element_blank(),
         axis.text.x = element_text(size = 12),
         axis.text.y = element_text(size = 12),
-        axis.title = element_text(size = 14),
+        axis.title.y = element_text(size = 14, face = "italic"),
+        axis.title.x = element_text(size = 14),
         panel.background = element_blank(),
         panel.grid.major.x = element_blank(),
         panel.grid.minor.x = element_blank(),
