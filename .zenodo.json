@@ -2,7 +2,6 @@
     "description": "<p>Contains the data and analysis of chapter 5 of BGs PH.D. thesis",
     "license": "CC BY 4.0",
     "title": "Predicting the Photosynthetic Efficiency of Acropora aspera",
-    "upload_type": "Data",
     "keywords": [
         "coral",
         "metabolomics",
