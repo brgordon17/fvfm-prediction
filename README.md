@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# Predicting the Photosynthetic Efficiency of *Acropora aspera* Exposed to Simulated Ocean Warming using LC-MS Metabolomics and a Random Forests Machine Learning Model
+# Predicting the Photosynthetic Efficiency of *Acropora aspera* Exposed to Elevated Temperature using LC-MS Metabolomics and a Random Forests Machine Learning Model
 
 <!-- badges: start -->
 

@@ -10,7 +10,7 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 ```
-# Predicting the Photosynthetic Efficiency of *Acropora aspera* Exposed to Simulated Ocean Warming using LC-MS Metabolomics and a Random Forests Machine Learning Model
+# Predicting the Photosynthetic Efficiency of *Acropora aspera* Exposed to Elevated Temperature using LC-MS Metabolomics and a Random Forests Machine Learning Model
 
 <!-- badges: start -->
 [![License: CC BY 4.0](https://img.shields.io/badge/License-CC%20BY%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by/4.0/)
