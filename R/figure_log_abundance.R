@@ -15,7 +15,7 @@ box_cor <- ggplot(data = reshape2::melt(filter(mzdata[-6], class != "PBQC")),
                       fill = batch)) +
   geom_boxplot(outlier.alpha = 0.4,
                outlier.size = 1) +
-  scale_fill_manual(values = gordon01::qual_colours) +
+  scale_fill_manual(values = phdhelpr::qual_colours) +
   scale_x_discrete(name = NULL) +
   scale_y_continuous(name = "Relative log Abundance") +
   theme(panel.background = element_blank(),

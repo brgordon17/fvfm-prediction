@@ -18,8 +18,8 @@ ggplot(data = tempdata, aes(x = time)) +
   geom_path(aes(y = meanT, colour = "Heated")) +
   geom_path(aes(y = meanIMOS, colour = "Reef@0.3m")) +
   labs(title = NULL, x = "Time (days)", y = "Temperature"~(degree~C)) +
-  scale_color_manual(values = c("Control" = gordon01::qual_colours[2],
-                                "Heated" = gordon01::qual_colours[6],
+  scale_color_manual(values = c("Control" = phdhelpr::qual_colours[2],
+                                "Heated" = phdhelpr::qual_colours[6],
                                 "Reef@0.3m" = "grey80")) +
   scale_x_datetime(date_labels = as.character(c(0:15)), date_breaks = "1 days", 
                    limits = plot_time) +

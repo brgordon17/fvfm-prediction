@@ -19,7 +19,7 @@ exp_var <- summary(pca)$importance[2 ,]
 pc_names <- paste(colnames(pca$x), " (", round(exp_var * 100, 1), "%)", sep =  "")
 scores <- data.frame(mzdata[, 1:5], pca$x)
 colnames(scores)[6:ncol(scores)] <- pc_names
-custom_colours <- gordon01::qual_colours
+custom_colours <- phdhelpr::qual_colours
 
 # create pairs plot of first 5 PCs
 pca_pairs <- ggpairs(data = scores,

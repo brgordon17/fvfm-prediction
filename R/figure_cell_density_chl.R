@@ -21,7 +21,7 @@ dens <- ggplot(filter(densitydata, day != "1" & day != "5"),
                      labels = c(8, 10, 12, 15)) +
   scale_y_continuous(name = expression(Cell~Density~(10^6~cells~cm^-2)),
                      limits = c(0, 2)) +
-  scale_colour_manual(values = gordon01::qual_colours[c(2, 6)], 
+  scale_colour_manual(values = phdhelpr::qual_colours[c(2, 6)], 
                       name = NULL,
                       labels = c("control", "heated")) +
   scale_shape_manual(values = c(16, 17),
