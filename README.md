@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# Coral Metabolomics: Predicting the Photosynthetic Efficiency of Thermally Stressed Corals
+# Predicting the Photosynthetic efficiency of *Acropora aspera* Exposed to Simulated Ocean Warming using LC-MS Metabolomics and a Random Forests Machine Learning Model
 
 <!-- badges: start -->
 
@@ -15,8 +15,8 @@ BY 4.0](https://img.shields.io/badge/License-CC%20BY%204.0-lightgrey.svg)](https
 text](https://github.com/brgordon17/fvfm-prediction/blob/master/figs/prediction_boxplot.png)
 <!-- image: end -->
 
-This repository contains the R code used in this experiment. The
-following folders contain:
+This repository contains the R code used for the experiment described in
+Chapter 5 of BGs PH.D. thesis. The following folders contain:
 
   - [R/](R/): All scripts to fully reproduce the data, analysis, figures
     and tables in this chapter
